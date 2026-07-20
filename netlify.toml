@@ -1,0 +1,72 @@
+[build]
+  command = "npm run build"
+  publish = "public"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+[[redirects]]
+  from = "/api/register"
+  to = "/.netlify/functions/register"
+  status = 200
+
+[[redirects]]
+  from = "/api/delegates"
+  to = "/.netlify/functions/delegates"
+  status = 200
+
+[[redirects]]
+  from = "/api/checkin"
+  to = "/.netlify/functions/checkin"
+  status = 200
+
+[[redirects]]
+  from = "/api/export"
+  to = "/.netlify/functions/export"
+  status = 200
+
+[[redirects]]
+  from = "/api/asset/*"
+  to = "/.netlify/functions/asset?key=:splat"
+  status = 200
+
+[[redirects]]
+  from = "/api/manage-registration"
+  to = "/.netlify/functions/manage-registration"
+  status = 200
+
+[[redirects]]
+  from = "/api/admin-update"
+  to = "/.netlify/functions/admin-update"
+  status = 200
+
+[[redirects]]
+  from = "/api/staff-login"
+  to = "/.netlify/functions/staff-login"
+  status = 200
+
+[[redirects]]
+  from = "/api/checkin-sync"
+  to = "/.netlify/functions/checkin-sync"
+  status = 200
+
+[[redirects]]
+  from = "/api/offline-delegates"
+  to = "/.netlify/functions/offline-delegates"
+  status = 200
+
+[[redirects]]
+  from = "/api/badge-pdf"
+  to = "/.netlify/functions/badge-pdf"
+  status = 200
+
+[[redirects]]
+  from = "/api/retrieve-registration"
+  to = "/.netlify/functions/retrieve-registration"
+  status = 200
+
+[[redirects]]
+  from = "/api/admin-actions"
+  to = "/.netlify/functions/admin-actions"
+  status = 200

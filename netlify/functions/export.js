@@ -1,0 +1,20 @@
+import ExcelJS from 'exceljs';
+import { assetsStore, requireAdmin, readAllDelegates } from './_shared.js';
+
+const columns=[
+  ['Registration ID','registrationId',22],['Registration Type','registrationType',20],['Delegate ID','delegateId',22],['Badge ID','badgeId',24],
+  ['Affiliate','affiliate',20],['Main Member','primaryName',24],['Main Member Email','primaryEmail',30],['Main Member Mobile','primaryMobile',18],
+  ['Delegate Name','fullName',26],['Job Title','jobTitle',24],['Delegate Email','email',30],['Mobile','mobile',18],['Dietary','dietary',16],
+  ['Accessibility','accessibility',24],['Shirt / Jacket Size','shirtJacketSize',18],['Voting Member','votingMember',15],
+  ['Accommodation Required','accommodationRequired',20],['Conference Check-in','conferenceCheckIn',22],['Conference Check-out','conferenceCheckOut',22],
+  ['Inbound Flight Status','inboundStatus',20],['Inbound Airline','inboundAirline',18],['Inbound Flight Number','inboundNumber',20],['Arrival Date','arrivalDate',16],['Arrival Time','arrivalTime',16],
+  ['Outbound Flight Status','outboundStatus',20],['Outbound Airline','outboundAirline',18],['Outbound Flight Number','outboundNumber',20],['Departure Date','departureDate',16],['Departure Time','departureTime',16],
+  ['Checked In At','checkedInAt',24],['Headshot','headshot',18],['Delegate QR','delegateQr',18],['Voting QR','votingQr',18]
+].map(([header,key,width])=>({header,key,width}));
+
+function addTableSheet(wb,name,rows,assets){
+  const ws=wb.addWorksheet(name,{views:[{state:'frozen',ySplit:1}]});ws.columns=columns;ws.getRow(1).font={bold:true};ws.getRow(1).height=25;
+  return (async()=>{for(const x of rows){const row=ws.addRow({registrationId:x.registrationId,registrationType:x.registrationType==='affiliate'?'Affiliate Attendee':'VIP / Main Delegate',delegateId:x.delegateId,badgeId:x.badgeId,affiliate:x.affiliate||'',primaryName:x.primaryContact?.fullName||'',primaryEmail:x.primaryContact?.email||'',primaryMobile:x.primaryContact?.mobile||'',fullName:x.fullName,jobTitle:x.jobTitle,email:x.email,mobile:x.mobile,dietary:x.dietary,accessibility:x.accessibility,shirtJacketSize:x.shirtJacketSize,votingMember:x.votingMember,accommodationRequired:x.accommodation?.required||'No',conferenceCheckIn:x.conferenceDates?.checkIn||x.accommodation?.checkIn||'',conferenceCheckOut:x.conferenceDates?.checkOut||x.accommodation?.checkOut||'',inboundStatus:x.inboundFlight?.status||'',inboundAirline:x.inboundFlight?.airline||'',inboundNumber:x.inboundFlight?.flightNumber||'',arrivalDate:x.inboundFlight?.date||'',arrivalTime:x.inboundFlight?.time||'',outboundStatus:x.outboundFlight?.status||'',outboundAirline:x.outboundFlight?.airline||'',outboundNumber:x.outboundFlight?.flightNumber||'',departureDate:x.outboundFlight?.date||'',departureTime:x.outboundFlight?.time||'',checkedInAt:x.checkedInAt||''});row.height=95;const rn=row.number;const image=async(key,col,ext='png')=>{if(!key)return;const arr=await assets.get(key,{type:'arrayBuffer'});if(!arr)return;const imageId=wb.addImage({buffer:Buffer.from(arr),extension:ext});ws.addImage(imageId,{tl:{col:col-1+.1,row:rn-1+.1},ext:{width:85,height:85}})};const photoExt=x.headshotKey.endsWith('.png')?'png':'jpeg';await image(x.headshotKey,31,photoExt);await image(x.badgeQrKey,32);await image(x.votingQrKey,33)}})();
+}
+
+export default async(req)=>{try{const url=new URL(req.url);requireAdmin(url.searchParams.get('pin'));const rows=await readAllDelegates(),assets=assetsStore(),wb=new ExcelJS.Workbook();await addTableSheet(wb,'All Delegates',rows,assets);await addTableSheet(wb,'Affiliate Attendees',rows.filter(x=>x.registrationType==='affiliate'),assets);await addTableSheet(wb,'Main Delegates',rows.filter(x=>x.registrationType==='main'),assets);const buffer=await wb.xlsx.writeBuffer();return new Response(buffer,{headers:{'content-type':'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','content-disposition':'attachment; filename="FEDUSA_Conference_Registrations.xlsx"'}})}catch(error){return new Response(error.message,{status:401})}};

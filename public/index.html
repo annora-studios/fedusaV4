@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>FEDUSA Conference Registration</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header class="topbar">
+<div class="brand">
+    <div class="logo-mark">
+        <img src="assets/Fedusalogo.svg" alt="FEDUSA Logo">
+    </div>
+    <div>
+        <strong>FEDUSA</strong>
+        <span>Conference Registration</span>
+    </div>
+</div>
+<div class="secure-label">🛡️Secure registration</div>
+</header>
+
+<section class="hero-section" id="conferenceHero">
+  <video class="hero-video" id="heroVideo" autoplay muted loop playsinline poster="/assets/FEDUSA-Top-Banner.png">
+    <source src="/assets/conference-hero.mp4" type="video/mp4">
+  </video>
+  <div class="hero-image" aria-hidden="true"></div><div class="hero-overlay"></div>
+  <div class="hero-content">
+    <h1>8th FEDUSA National Congress</h1>
+    <div class="event-details">
+      <span><b>Date</b> 13–15 October 2026</span>
+      <span><b>Venue</b> Radisson Blu OR Tambo Convention Centre</span>
+      <span><b>City</b> Johannesburg, South Africa</span>
+    </div>
+    <p>Connect, participate and help shape the future. Choose the correct registration path to secure your place at the conference.</p>
+    <div class="hero-actions">
+      <a class="hero-primary" href="#registration-start">Register now</a>
+      <a class="hero-secondary" href="#keynote-speakers">Meet the speakers</a><a class="hero-secondary" href="/retrieve.html">Manage existing registration</a>
+    </div>
+  </div>
+  <div class="countdown-panel" aria-label="Conference countdown">
+    <span>Congress begins in</span>
+    <div class="countdown-grid" id="countdownGrid">
+      <b><strong id="countDays">--</strong><small>Days</small></b>
+      <b><strong id="countHours">--</strong><small>Hours</small></b>
+      <b><strong id="countMinutes">--</strong><small>Minutes</small></b>
+      <b><strong id="countSeconds">--</strong><small>Seconds</small></b>
+    </div>
+  </div>
+  
+</section>
+
+<section class="speakers-section" id="keynote-speakers">
+  <div class="section-heading">
+    <span class="eyebrow">KEYNOTE SPEAKERS</span>
+    <h2>Ideas that move people forward</h2>
+    <p>Meet the leaders and industry voices who will share insights, challenge perspectives and inspire meaningful action.</p>
+  </div>
+  <div class="speaker-grid">
+    <article class="speaker-card">
+      <div class="speaker-image-wrap"><img src="/assets/speaker-1.svg" alt="Keynote speaker placeholder"><span>Opening keynote</span></div>
+      <div class="speaker-copy"><h3>Speaker Name</h3><p class="speaker-role">Position or organisation</p><p class="speaker-topic">Building stronger organisations through purposeful leadership.</p><button class="speaker-more" type="button">View speaker details</button><div class="speaker-bio hidden">Add the speaker biography, session time and keynote description here.</div></div>
+    </article>
+    <article class="speaker-card featured-speaker">
+      <div class="speaker-image-wrap"><img src="/assets/speaker-2.svg" alt="Keynote speaker placeholder"><span>Featured address</span></div>
+      <div class="speaker-copy"><h3>Speaker Name</h3><p class="speaker-role">Position or organisation</p><p class="speaker-topic">The future of work, representation and collective progress.</p><button class="speaker-more" type="button">View speaker details</button><div class="speaker-bio hidden">Add the speaker biography, session time and keynote description here.</div></div>
+    </article>
+    <article class="speaker-card">
+      <div class="speaker-image-wrap"><img src="/assets/speaker-3.svg" alt="Keynote speaker placeholder"><span>Closing keynote</span></div>
+      <div class="speaker-copy"><h3>Speaker Name</h3><p class="speaker-role">Position or organisation</p><p class="speaker-topic">Turning conference conversations into lasting impact.</p><button class="speaker-more" type="button">View speaker details</button><div class="speaker-bio hidden">Add the speaker biography, session time and keynote description here.</div></div>
+    </article>
+  </div>
+</section>
+
+<main class="page-wrap">
+  <section class="path-intro" id="registration-start">
+    <span class="eyebrow">CHOOSE A REGISTRATION PATH</span>
+    <h2>How are you attending?</h2>
+    <p>To ensure you complete the correct registration form, please indicate whether you are registering as an Affiliate or as a Main Delegate.</p>
+    <div class="path-buttons">
+      <button class="path-card main-path" data-path="main" type="button">
+        <span class="path-icon">V</span><span><strong>VIP / Main Delegate</strong><small>Individual registration for Main Delegates, including voting eligibility, accommodation requirements, and travel details.</small></span><b>Start individual registration →</b>
+      </button>
+		 <button class="path-card affiliate-path" data-path="affiliate" type="button">
+        <span class="path-icon">A</span><span><strong>Affiliate Attendees</strong><small>A main member registers multiple attendees on behalf of an affiliate.</small></span><b>Start affiliate registration →</b>
+      </button>
+    </div>
+  </section>
+
+  <section id="formShell" class="form-shell hidden">
+    <aside class="steps" id="stepsPanel"></aside>
+    <form id="registrationForm" class="main-card" novalidate></form>
+    <aside class="summary-card">
+      <div class="summary-path" id="summaryPath"></div>
+      <h2>Registration Summary</h2>
+      <div id="summaryContent"></div>
+      <div class="privacy-box">🔒Your information is secure and will only be used for conference registration, badge printing and event check-in.</div>
+    </aside>
+  </section>
+</main>
+
+<template id="commonPersonFields">
+  <div class="form-grid">
+    <label>Full Name *<input class="person-name" required></label>
+    <label>Organisation<input class="person-title"></label>
+    <label>Email Address *<input class="person-email" type="email" required></label>
+    <label>Mobile Number *<input class="person-phone" required></label>
+    <label>Dietary Requirements *<select class="person-diet" required><option>None</option><option>Vegetarian</option><option>Vegan</option><option>Halal</option><option>Kosher</option><option>Other</option></select></label>
+    <label>Accessibility Requirements<textarea class="person-access" placeholder="Optional"></textarea></label>
+    <label>Shirt / Jacket Size *<select class="person-size" required><option value="">Select size</option><option>XS</option><option>S</option><option>M</option><option>L</option><option>XL</option><option>2XL</option><option>3XL</option><option>4XL</option><option>5XL</option></select></label>
+    <label>Headshot *<input class="person-photo" type="file" accept="image/jpeg,image/png,image/webp" required></label>
+    <div class="photo-preview full">Photo preview</div>
+  </div>
+</template>
+
+<div class="modal hidden" id="promoModal" role="dialog" aria-modal="true" aria-labelledby="promoTitle">
+  <div class="modal-card"><button class="modal-close" type="button" aria-label="Close">×</button><span class="modal-kicker" id="promoKicker"></span><h2 id="promoTitle"></h2><p id="promoText"></p><div class="modal-actions"><a id="promoLink" class="primary-btn" href="#">View options</a><button id="promoDismiss" class="outline-btn" type="button">Close</button></div></div>
+</div>
+
+<script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,3 @@
+import crypto from 'node:crypto';import {json,staffUsers,createSession,safeEqual} from './_shared.js';
+function hash(v){return crypto.createHash('sha256').update(v).digest('hex')}
+export default async(req)=>{if(req.method!=='POST')return json({error:'Method not allowed'},405);try{const {username,password}=await req.json(),user=staffUsers().find(x=>x.username===username);if(!user||!safeEqual(user.passwordHash||'',hash(password||'')))return json({error:'Invalid login.'},401);return json({token:createSession(user),user:{name:user.name,role:user.role||'scanner',location:user.location||''}})}catch(e){return json({error:e.message},400)}};

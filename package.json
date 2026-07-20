@@ -1,0 +1,19 @@
+{
+  "name": "fedusa-dual-path-conference-registration",
+  "version": "4.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "netlify dev",
+    "build": "echo \"No frontend build required\""
+  },
+  "dependencies": {
+    "@netlify/blobs": "^10.0.0",
+    "exceljs": "^4.4.0",
+    "qrcode": "^1.5.4",
+    "resend": "^4.0.1"
+  },
+  "devDependencies": {
+    "netlify-cli": "^23.0.0"
+  }
+}
