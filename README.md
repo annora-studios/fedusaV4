@@ -1,6 +1,6 @@
-# FEDUSA Congress Management Platform v4
+# FEDUSA Congress Management Platform v5
 
-Version 4 adds central delegate identity checking, duplicate prevention, secure management links, registration-link retrieval, confirmation emails and expanded admin controls to the existing Netlify platform.
+Version 5 retains the Version 4 registration and management foundation and adds a single-QR attendance model with separate Congress and Voting Session scanner modes.
 
 ## Main features
 
@@ -14,14 +14,17 @@ Version 4 adds central delegate identity checking, duplicate prevention, secure 
 - `Retrieve My Registration` page
 - Admin email resend, management-link regeneration and category changes
 - Audit logging
-- Badge, QR, check-in, Excel export and Android scanner compatibility
+- One badge QR per attendee for Congress and Voting Session access
+- Separate Congress and Voting check-in records and duplicate detection
+- Voting eligibility enforcement in scanner mode
+- Badge printing, Excel export and Android scanner compatibility
 
 ## Deploy
 
 1. Upload the contents of this folder to the root of the GitHub repository connected to Netlify.
 2. Configure the variables below in Netlify.
 3. Trigger **Clear cache and deploy site**.
-4. Run the tests in `V4-TEST-CHECKLIST.md`.
+4. Run the tests in `V5-TEST-CHECKLIST.md`.
 
 ## Required Netlify variables
 
@@ -32,7 +35,7 @@ Version 4 adds central delegate identity checking, duplicate prevention, secure 
 - `SITE_URL` - production URL without a trailing slash
 - `STAFF_USERS` - JSON array for scanner staff accounts
 
-The platform uses Netlify Blobs and does not require a separate SQL database for v4.
+The platform uses Netlify Blobs and does not require a separate SQL database for v5.
 
 ## Main URLs
 

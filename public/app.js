@@ -130,7 +130,7 @@ const videoToggle=document.querySelector('#videoToggle');
 const muteToggle=document.querySelector('#muteToggle');
 if(heroVideo&&videoToggle){videoToggle.addEventListener('click',()=>{if(heroVideo.paused){heroVideo.play().catch(()=>{});videoToggle.textContent='Pause';videoToggle.setAttribute('aria-label','Pause background video')}else{heroVideo.pause();videoToggle.textContent='Play';videoToggle.setAttribute('aria-label','Play background video')}})}
 if(heroVideo&&muteToggle){muteToggle.addEventListener('click',()=>{heroVideo.muted=!heroVideo.muted;muteToggle.textContent=heroVideo.muted?'Sound off':'Sound on';muteToggle.setAttribute('aria-label',heroVideo.muted?'Unmute background video':'Mute background video')})}
-const eventStart=new Date('2026-10-13T09:00:00+02:00').getTime();
+const eventStart=new Date('2026-10-14T09:00:00+02:00').getTime();
 function updateCountdown(){const distance=eventStart-Date.now();const values=distance>0?{d:Math.floor(distance/86400000),h:Math.floor(distance%86400000/3600000),m:Math.floor(distance%3600000/60000),s:Math.floor(distance%60000/1000)}:{d:0,h:0,m:0,s:0};[['countDays',values.d],['countHours',values.h],['countMinutes',values.m],['countSeconds',values.s]].forEach(([id,value])=>{const el=document.getElementById(id);if(el)el.textContent=String(value).padStart(2,'0')})}
 updateCountdown();setInterval(updateCountdown,1000);
 document.querySelectorAll('.speaker-more').forEach(button=>button.addEventListener('click',()=>{const bio=button.nextElementSibling;const opening=bio.classList.contains('hidden');bio.classList.toggle('hidden');button.textContent=opening?'Hide speaker details':'View speaker details'}));

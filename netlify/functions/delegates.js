@@ -9,8 +9,7 @@ export default async (req) => {
       ...x,
       primaryContact: undefined,
       headshotUrl: `/api/asset/${encodeURIComponent(x.headshotKey)}?pin=${encodeURIComponent(url.searchParams.get("pin"))}`,
-      badgeQrUrl: `/api/asset/${encodeURIComponent(x.badgeQrKey)}?pin=${encodeURIComponent(url.searchParams.get("pin"))}`,
-      votingQrUrl: x.votingQrKey ? `/api/asset/${encodeURIComponent(x.votingQrKey)}?pin=${encodeURIComponent(url.searchParams.get("pin"))}` : null
+      badgeQrUrl: `/api/asset/${encodeURIComponent(x.badgeQrKey)}?pin=${encodeURIComponent(url.searchParams.get("pin"))}`
     }))});
   } catch (error) {
     return json({ error: error.message }, 401);
