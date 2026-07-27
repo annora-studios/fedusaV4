@@ -37,7 +37,22 @@ function setStaff(user){staff=user||staff;if(staff){$('#staffName').textContent=
 if(session){show('modeScreen');}
 $('#loginBtn').onclick=async()=>{const error=$('#loginError');error.classList.add('hidden');$('#loginBtn').disabled=true;try{const r=await fetch('/api/staff-login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({username:$('#username').value,password:$('#password').value})});const d=await r.json();if(!r.ok)throw new Error(d.error||'Sign-in failed');session=d.token;staff=d.user;localStorage.fedusaStaffToken=session;setStaff(staff);show('modeScreen')}catch(e){error.textContent=e.message;error.classList.remove('hidden')}finally{$('#loginBtn').disabled=false}};
 $('#logoutBtn').onclick=()=>{if(!session)return;localStorage.removeItem('fedusaStaffToken');session='';location.reload()};
-document.querySelectorAll('.mode-choice').forEach(btn=>btn.onclick=()=>{mode=btn.dataset.mode;$('#scanTitle').textContent=mode==='voting'?'VOTING SESSION CHECK-IN':'CONGRESS CHECK-IN';show('scanScreen');setTimeout(()=>$('#code').focus(),100)});
+document.querySelectorAll('.mode-choice').forEach(btn=>{
+    btn.onclick=()=>{
+        mode=btn.dataset.mode;
+
+        $('#scanTitle').textContent =
+        mode==='voting'
+        ? 'VOTING SESSION CHECK-IN'
+        : 'CONGRESS CHECK-IN';
+
+        show('scanScreen');
+
+        setTimeout(()=>{
+            startCameraScanner();
+        },500);
+    };
+});
 $('#backBtn').onclick=()=>show('modeScreen');$('#scanNextBtn').onclick=()=>{show('scanScreen');$('#code').value='';setTimeout(()=>$('#code').focus(),100)};
 async function scan(){const value=$('#code').value.trim();if(!value)return;$('#scanBtn').disabled=true;try{const r=await fetch('/api/checkin-sync',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({token:session,checkins:[{localId:crypto.randomUUID?.()||String(Date.now()),code:value,mode,method:'scan',scannedAt:new Date().toISOString()}]})});const d=await r.json();if(r.status===401){localStorage.removeItem('fedusaStaffToken');location.reload();return}if(!r.ok)throw new Error(d.error||'Scan failed');renderResult(d.results[0])}catch(e){renderResult({status:'not_found',delegate:null,error:e.message})}finally{$('#scanBtn').disabled=false}}
 function fmt(value){if(!value)return '—';try{return new Date(value).toLocaleString('en-ZA',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'short'})}catch{return value}}
