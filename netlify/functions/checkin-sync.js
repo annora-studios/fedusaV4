@@ -28,4 +28,4 @@ export default async(req)=>{
     return json({ok:true,results});
   }catch(e){return json({error:e.message},401)}
 };
-function summary(d){return{delegateId:d.delegateId,fullName:d.fullName,registrationType:d.registrationType,votingMember:d.votingMember,checkedInAt:d.checkedInAt||null,votingCheckedInAt:d.votingCheckedInAt||null,checkedInBy:d.checkedInBy||null,votingCheckedInBy:d.votingCheckedInBy||null}}
+function summary(d){return{delegateId:d.delegateId,badgeId:d.badgeId,fullName:d.fullName,registrationType:d.registrationType,votingMember:d.votingMember,affiliate:d.affiliate||'',jobTitle:d.jobTitle||'',headshotKey:d.headshotKey||'',checkedInAt:d.checkedInAt||null,votingCheckedInAt:d.votingCheckedInAt||null,checkedInBy:d.checkedInBy||null,votingCheckedInBy:d.votingCheckedInBy||null}}

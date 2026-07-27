@@ -23,3 +23,12 @@ Existing Version 4 delegate records remain compatible. New fields are optional a
 - `votingCheckedInBy`
 
 Legacy `votingQrKey` fields may remain on old records but are ignored by the Version 5 interface.
+
+## Design build update
+- Rebuilt the web scanner in the supplied FEDUSA navy, green and purple mobile-app style.
+- Added dedicated mode-selection, scan, success, duplicate and voting-denied screens.
+- Added delegate photo, badge ID, organisation, voting status and attendance time to scan results.
+- Added authorised staff-session access to delegate headshots shown after a scan.
+- Rebuilt badge printing as paired front-and-back badges with VIP gold and Affiliate green variants.
+- Moved the single check-in QR to the badge back and added the approved event and emergency-contact information.
+- Updated the Android starter layout and colour theme to match the supplied design direction.

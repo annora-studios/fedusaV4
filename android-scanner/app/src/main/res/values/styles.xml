@@ -1,1 +1,5 @@
-<resources><style name="Theme.FEDUSA" parent="Theme.Material3.DayNight.NoActionBar"><item name="colorPrimary">#08275C</item><item name="colorSecondary">#20A651</item></style></resources>
+<resources>
+<style name="Theme.FEDUSA" parent="Theme.Material3.DayNight.NoActionBar">
+<item name="colorPrimary">#062A5F</item><item name="colorSecondary">#0EA34A</item><item name="android:fontFamily">sans</item><item name="android:navigationBarColor">#031B45</item><item name="android:statusBarColor">#041A41</item><item name="android:windowLightStatusBar">false</item>
+</style>
+</resources>

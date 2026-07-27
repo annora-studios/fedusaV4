@@ -1,10 +1,10 @@
-import { assetsStore, requireAdmin, findRegistrationByToken } from "./_shared.js";
+import { assetsStore, requireAdmin, findRegistrationByToken, verifySession } from "./_shared.js";
 
 export default async (req) => {
   try {
     const url = new URL(req.url);
-    const pin=url.searchParams.get("pin"), editToken=url.searchParams.get("editToken");
-    if(pin) requireAdmin(pin); else if(editToken){ const reg=await findRegistrationByToken(editToken); if(!reg) throw new Error("Invalid registration link."); } else throw new Error("Access denied.");
+    const pin=url.searchParams.get("pin"), editToken=url.searchParams.get("editToken"), sessionToken=url.searchParams.get("token");
+    if(pin) requireAdmin(pin); else if(editToken){ const reg=await findRegistrationByToken(editToken); if(!reg) throw new Error("Invalid registration link."); } else if(sessionToken){ verifySession(sessionToken); } else throw new Error("Access denied.");
     const key = url.searchParams.get("key");
     if (!key) return new Response("Missing key", { status: 400 });
     const store = assetsStore();
