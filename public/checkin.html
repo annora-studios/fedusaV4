@@ -4,11 +4,11 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>FEDUSA Congress 2026 Scanner</title>
 <link rel="stylesheet" href="/styles.css">
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <style>
 :root{--navy:#031d4a;--navy2:#062c64;--green:#0ea34a;--green2:#087b39;--purple:#7040b6;--gold:#b8861b;--orange:#ef8f00;--red:#dc2929;--ink:#071a3a}
-*{box-sizing:border-box}.scanner-app{min-height:100vh;background:radial-gradient(circle at 50% 0,#0d467d 0,#061f4b 40%,#020d27 100%);color:#fff;display:flex;align-items:center;justify-content:center;padding:18px}.phone-shell{width:min(100%,430px);min-height:min(850px,calc(100vh - 36px));background:linear-gradient(180deg,#062a5f,#031b45);border:1px solid rgba(255,255,255,.2);border-radius:34px;overflow:hidden;box-shadow:0 28px 70px #0008;display:flex;flex-direction:column;position:relative}.app-header{height:88px;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;background:#041a41;border-bottom:1px solid #ffffff18}.brand-lockup{display:flex;gap:12px;align-items:center}.brand-lockup img{width:42px;height:42px;object-fit:contain}.brand-lockup strong{display:block;font-size:22px;letter-spacing:.5px}.brand-lockup span{display:block;color:#22d368;font-size:12px;font-weight:900;letter-spacing:.8px}.icon-btn{border:0;background:#ffffff12;color:#fff;border-radius:12px;padding:10px 12px;cursor:pointer}.screen{display:none;flex:1;min-height:0}.screen.active{display:flex;flex-direction:column}.screen-pad{padding:28px 22px;flex:1}.eyebrow{font-size:12px;color:#9bb5d9;text-transform:uppercase;letter-spacing:1.5px;font-weight:800}.screen h1{font-size:25px;margin:8px 0 6px}.screen p{color:#c1cee1;line-height:1.5}.mode-stack{display:grid;gap:16px;margin-top:34px}.mode-choice{border:0;color:#fff;border-radius:16px;padding:23px 20px;display:flex;align-items:center;gap:16px;text-align:left;cursor:pointer;box-shadow:0 10px 25px #0003}.mode-choice.congress{background:linear-gradient(135deg,#14ad54,#087838)}.mode-choice.voting{background:linear-gradient(135deg,#8650ce,#5d2e9e)}.mode-icon{width:52px;height:52px;border-radius:14px;background:#ffffff20;display:grid;place-items:center;font-size:27px}.mode-choice strong{font-size:17px;display:block}.mode-choice small{display:block;margin-top:3px;color:#fff}.app-bottom{height:70px;border-top:1px solid #ffffff18;display:flex;justify-content:space-around;align-items:center;color:#b7c6dc;font-size:12px}.bottom-item{text-align:center}.bottom-item b{display:block;font-size:19px;color:#fff;margin-bottom:2px}.login-card{background:#fff;color:var(--ink);border-radius:18px;padding:22px;margin-top:22px}.login-card label{display:block;font-size:12px;font-weight:800;margin:12px 0 5px}.login-card input,.manual-entry input{width:100%;border:1px solid #ccd6e4;border-radius:11px;padding:14px;font-size:16px}.primary-app-btn{width:100%;border:0;background:var(--green);color:#fff;border-radius:12px;padding:15px;font-weight:900;font-size:15px;cursor:pointer;margin-top:16px}.error-note{background:#fff0f0;color:#a51e1e;border-radius:10px;padding:11px;margin-top:12px}.scanner-top{padding:16px 18px;display:flex;align-items:center;justify-content:space-between;background:#041a41}.scanner-top strong{font-size:14px;letter-spacing:.7px}.camera-stage{position:relative;flex:1;min-height:420px;background:linear-gradient(#0006,#0006),url('/assets/hero-placeholder.svg') center/cover;display:grid;place-items:center;overflow:hidden}.camera-stage::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at center,transparent 0 32%,#0008 72%)}.scan-frame{width:250px;height:330px;position:relative;z-index:2}.scan-frame i{position:absolute;width:48px;height:48px;border-color:#19e276;border-style:solid}.scan-frame i:nth-child(1){left:0;top:0;border-width:4px 0 0 4px}.scan-frame i:nth-child(2){right:0;top:0;border-width:4px 4px 0 0}.scan-frame i:nth-child(3){left:0;bottom:0;border-width:0 0 4px 4px}.scan-frame i:nth-child(4){right:0;bottom:0;border-width:0 4px 4px 0}.scan-line{height:3px;background:#25f17d;box-shadow:0 0 12px #25f17d;position:absolute;left:12px;right:12px;animation:sweep 2s infinite alternate ease-in-out}@keyframes sweep{from{top:20px}to{top:305px}}.scan-hint{position:absolute;bottom:28px;left:20px;right:20px;text-align:center;z-index:3;color:#fff;font-weight:800}.manual-entry{background:#041a41;padding:15px 18px;display:flex;gap:9px}.manual-entry input{background:#fff}.manual-entry button{border:0;border-radius:10px;padding:0 15px;background:var(--green);color:#fff;font-weight:900}.result-screen{background:#f3f6fa;color:var(--ink)}.result-hero{text-align:center;padding:32px 20px 22px;color:#fff}.result-hero.success{background:linear-gradient(135deg,#1bb85e,#07853d)}.result-hero.duplicate{background:linear-gradient(135deg,#f4a20a,#e37a00)}.result-hero.denied{background:linear-gradient(135deg,#ed3737,#b91414)}.result-symbol{width:82px;height:82px;margin:auto;border:5px solid #fff;border-radius:50%;display:grid;place-items:center;font-size:48px;font-weight:900}.result-title{font-size:22px;font-weight:900;margin-top:14px}.delegate-photo{width:90px;height:90px;border-radius:50%;object-fit:cover;background:#dfe7f1;border:5px solid #fff;display:block;margin:-22px auto 4px;position:relative}.result-body{text-align:center;padding:0 22px 24px}.result-body h2{font-size:22px;margin:8px 0 2px}.delegate-type{font-weight:900;font-size:12px}.delegate-type.vip{color:var(--gold)}.delegate-type.affiliate{color:var(--green)}.result-meta{background:#fff;border-radius:14px;margin:18px 0;padding:14px;text-align:left;box-shadow:0 5px 18px #0d244518}.meta-row{display:flex;justify-content:space-between;gap:15px;padding:8px 0;border-bottom:1px solid #e8edf3;font-size:13px}.meta-row:last-child{border:0}.meta-row span{color:#6b788c}.scan-next{border:0;width:100%;padding:15px;border-radius:11px;color:#fff;font-weight:900;font-size:15px;cursor:pointer;background:var(--green)}.scan-next.duplicate{background:var(--orange)}.scan-next.denied{background:var(--red)}.staff-strip{padding:12px 18px;background:#05183a;color:#aebfda;font-size:12px;display:flex;justify-content:space-between}.hidden{display:none!important}@media(max-width:520px){.scanner-app{padding:0}.phone-shell{width:100%;min-height:100vh;border-radius:0;border:0}.camera-stage{min-height:0}}
+*{box-sizing:border-box}.scanner-app{min-height:100vh;background:radial-gradient(circle at 50% 0,#0d467d 0,#061f4b 40%,#020d27 100%);color:#fff;display:flex;align-items:center;justify-content:center;padding:18px}.phone-shell{width:min(100%,430px);min-height:min(850px,calc(100vh - 36px));background:linear-gradient(180deg,#062a5f,#031b45);border:1px solid rgba(255,255,255,.2);border-radius:34px;overflow:hidden;box-shadow:0 28px 70px #0008;display:flex;flex-direction:column;position:relative}.app-header{height:88px;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;background:#041a41;border-bottom:1px solid #ffffff18}.brand-lockup{display:flex;gap:12px;align-items:center}.brand-lockup img{width:42px;height:42px;object-fit:contain}.brand-lockup strong{display:block;font-size:22px;letter-spacing:.5px}.brand-lockup span{display:block;color:#22d368;font-size:12px;font-weight:900;letter-spacing:.8px}.icon-btn{border:0;background:#ffffff12;color:#fff;border-radius:12px;padding:10px 12px;cursor:pointer}.screen{display:none;flex:1;min-height:0}.screen.active{display:flex;flex-direction:column}.screen-pad{padding:28px 22px;flex:1}.eyebrow{font-size:12px;color:#9bb5d9;text-transform:uppercase;letter-spacing:1.5px;font-weight:800}.screen h1{font-size:25px;margin:8px 0 6px}.screen p{color:#c1cee1;line-height:1.5}.mode-stack{display:grid;gap:16px;margin-top:34px}.mode-choice{border:0;color:#fff;border-radius:16px;padding:23px 20px;display:flex;align-items:center;gap:16px;text-align:left;cursor:pointer;box-shadow:0 10px 25px #0003}.mode-choice.congress{background:linear-gradient(135deg,#14ad54,#087838)}.mode-choice.voting{background:linear-gradient(135deg,#8650ce,#5d2e9e)}.mode-icon{width:52px;height:52px;border-radius:14px;background:#ffffff20;display:grid;place-items:center;font-size:27px}.mode-choice strong{font-size:17px;display:block}.mode-choice small{display:block;margin-top:3px;color:#fff}.app-bottom{height:70px;border-top:1px solid #ffffff18;display:flex;justify-content:space-around;align-items:center;color:#b7c6dc;font-size:12px}.bottom-item{text-align:center}.bottom-item b{display:block;font-size:19px;color:#fff;margin-bottom:2px}.login-card{background:#fff;color:var(--ink);border-radius:18px;padding:22px;margin-top:22px}.login-card label{display:block;font-size:12px;font-weight:800;margin:12px 0 5px}.login-card input,.manual-entry input{width:100%;border:1px solid #ccd6e4;border-radius:11px;padding:14px;font-size:16px}.primary-app-btn{width:100%;border:0;background:var(--green);color:#fff;border-radius:12px;padding:15px;font-weight:900;font-size:15px;cursor:pointer;margin-top:16px}.error-note{background:#fff0f0;color:#a51e1e;border-radius:10px;padding:11px;margin-top:12px}.scanner-top{padding:16px 18px;display:flex;align-items:center;justify-content:space-between;background:#041a41}.scanner-top strong{font-size:14px;letter-spacing:.7px}.camera-stage{position:relative;flex:1;min-height:420px;background:linear-gradient(#0006,#0006),url('/assets/hero-placeholder.svg') center/cover;display:grid;place-items:center;overflow:hidden}.camera-stage::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at center,transparent 0 32%,#0008 72%);pointer-events:none;z-index:1}.camera-reader{position:absolute;inset:0;z-index:0}.camera-reader video{width:100%!important;height:100%!important;object-fit:cover}.camera-reader img{display:none}.camera-error{position:absolute;left:18px;right:18px;bottom:64px;z-index:4;background:#fff;color:#a51e1e;border-radius:12px;padding:12px;text-align:center;font-size:13px;line-height:1.4}.scan-frame{width:250px;height:330px;position:relative;z-index:2}.scan-frame i{position:absolute;width:48px;height:48px;border-color:#19e276;border-style:solid}.scan-frame i:nth-child(1){left:0;top:0;border-width:4px 0 0 4px}.scan-frame i:nth-child(2){right:0;top:0;border-width:4px 4px 0 0}.scan-frame i:nth-child(3){left:0;bottom:0;border-width:0 0 4px 4px}.scan-frame i:nth-child(4){right:0;bottom:0;border-width:0 4px 4px 0}.scan-line{height:3px;background:#25f17d;box-shadow:0 0 12px #25f17d;position:absolute;left:12px;right:12px;animation:sweep 2s infinite alternate ease-in-out}@keyframes sweep{from{top:20px}to{top:305px}}.scan-hint{position:absolute;bottom:28px;left:20px;right:20px;text-align:center;z-index:3;color:#fff;font-weight:800}.manual-entry{background:#041a41;padding:15px 18px;display:flex;gap:9px}.manual-entry input{background:#fff}.manual-entry button{border:0;border-radius:10px;padding:0 15px;background:var(--green);color:#fff;font-weight:900}.result-screen{background:#f3f6fa;color:var(--ink)}.result-hero{text-align:center;padding:32px 20px 22px;color:#fff}.result-hero.success{background:linear-gradient(135deg,#1bb85e,#07853d)}.result-hero.duplicate{background:linear-gradient(135deg,#f4a20a,#e37a00)}.result-hero.denied{background:linear-gradient(135deg,#ed3737,#b91414)}.result-symbol{width:82px;height:82px;margin:auto;border:5px solid #fff;border-radius:50%;display:grid;place-items:center;font-size:48px;font-weight:900}.result-title{font-size:22px;font-weight:900;margin-top:14px}.delegate-photo{width:90px;height:90px;border-radius:50%;object-fit:cover;background:#dfe7f1;border:5px solid #fff;display:block;margin:-22px auto 4px;position:relative}.result-body{text-align:center;padding:0 22px 24px}.result-body h2{font-size:22px;margin:8px 0 2px}.delegate-type{font-weight:900;font-size:12px}.delegate-type.vip{color:var(--gold)}.delegate-type.affiliate{color:var(--green)}.result-meta{background:#fff;border-radius:14px;margin:18px 0;padding:14px;text-align:left;box-shadow:0 5px 18px #0d244518}.meta-row{display:flex;justify-content:space-between;gap:15px;padding:8px 0;border-bottom:1px solid #e8edf3;font-size:13px}.meta-row:last-child{border:0}.meta-row span{color:#6b788c}.scan-next{border:0;width:100%;padding:15px;border-radius:11px;color:#fff;font-weight:900;font-size:15px;cursor:pointer;background:var(--green)}.scan-next.duplicate{background:var(--orange)}.scan-next.denied{background:var(--red)}.staff-strip{padding:12px 18px;background:#05183a;color:#aebfda;font-size:12px;display:flex;justify-content:space-between}.hidden{display:none!important}@media(max-width:520px){.scanner-app{padding:0}.phone-shell{width:100%;min-height:100vh;border-radius:0;border:0}.camera-stage{min-height:0}}
 </style>
-<script src="https://unpkg.com/html5-qrcode"></script>
 </head>
 <body>
 <main class="scanner-app">
@@ -19,17 +19,13 @@
 
 <section id="modeScreen" class="screen"><div class="screen-pad"><span class="eyebrow">14–16 October 2026</span><h1>Select Mode</h1><p>One badge QR code supports multiple authorised workflows.</p><div class="mode-stack"><button class="mode-choice congress" data-mode="congress"><span class="mode-icon">👥</span><span><strong>CONGRESS CHECK-IN</strong><small>Record delegate arrival</small></span></button><button class="mode-choice voting" data-mode="voting"><span class="mode-icon">🗳</span><span><strong>VOTING SESSION CHECK-IN</strong><small>Verify voting-member access</small></span></button></div></div><div class="staff-strip"><span id="staffName">Staff member</span><span id="staffLocation"></span></div><footer class="app-bottom"><div class="bottom-item"><b>↶</b>History</div><div class="bottom-item"><b>⚙</b>Settings</div></footer></section>
 
-<section id="scanScreen" class="screen"><div class="scanner-top"><button class="icon-btn" id="backBtn">←</button><strong id="scanTitle">CONGRESS CHECK-IN</strong><button class="icon-btn" title="Flashlight">⚡</button></div><div class="camera-stage">
-
-<div id="reader" style="width:100%;height:100%;"></div>
-
-<div class="scan-frame"><i></i><i></i><i></i><i></i><div class="scan-line"></div></div><div class="scan-hint">Position QR code within the frame</div></div><div class="manual-entry"><input id="code" placeholder="Scan QR or enter badge ID" autocomplete="off"><button id="scanBtn">SCAN</button></div></section>
+<section id="scanScreen" class="screen"><div class="scanner-top"><button class="icon-btn" id="backBtn">←</button><strong id="scanTitle">CONGRESS CHECK-IN</strong><button class="icon-btn" title="Flashlight">⚡</button></div><div class="camera-stage"><div id="reader" class="camera-reader"></div><div class="scan-frame"><i></i><i></i><i></i><i></i><div class="scan-line"></div></div><div class="scan-hint" id="scanHint">Position QR code within the frame</div><div id="cameraError" class="camera-error hidden"></div></div><div class="manual-entry"><input id="code" placeholder="Scan QR or enter badge ID" autocomplete="off"><button id="scanBtn">SCAN</button></div></section>
 
 <section id="resultScreen" class="screen result-screen"><div id="resultHero" class="result-hero success"><div id="resultSymbol" class="result-symbol">✓</div><div id="resultTitle" class="result-title">CHECK-IN SUCCESSFUL</div></div><img id="delegatePhoto" class="delegate-photo" src="/assets/hero-placeholder.svg" alt="Delegate"><div class="result-body"><h2 id="delegateName">Delegate Name</h2><div id="delegateType" class="delegate-type vip">VIP DELEGATE</div><div id="delegateOrg">FEDUSA</div><div class="result-meta"><div class="meta-row"><span>BADGE ID</span><b id="badgeId">—</b></div><div class="meta-row"><span>VOTING MEMBER</span><b id="votingStatus">—</b></div><div class="meta-row"><span id="timeLabel">CHECKED IN</span><b id="checkTime">—</b></div><div id="previousRow" class="meta-row hidden"><span>PREVIOUS CHECK-IN</span><b id="previousTime">—</b></div></div><button id="scanNextBtn" class="scan-next">SCAN NEXT</button></div></section>
 </section>
 </main>
 <script>
-let session=localStorage.fedusaStaffToken||'',staff=null,mode='congress';
+let session=localStorage.fedusaStaffToken||'',staff=null,mode='congress',scanner=null,scannerRunning=false,scanLocked=false;
 const $=s=>document.querySelector(s), screens=[...document.querySelectorAll('.screen')];
 function show(id){screens.forEach(x=>x.classList.toggle('active',x.id===id));}
 function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -37,71 +33,45 @@ function setStaff(user){staff=user||staff;if(staff){$('#staffName').textContent=
 if(session){show('modeScreen');}
 $('#loginBtn').onclick=async()=>{const error=$('#loginError');error.classList.add('hidden');$('#loginBtn').disabled=true;try{const r=await fetch('/api/staff-login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({username:$('#username').value,password:$('#password').value})});const d=await r.json();if(!r.ok)throw new Error(d.error||'Sign-in failed');session=d.token;staff=d.user;localStorage.fedusaStaffToken=session;setStaff(staff);show('modeScreen')}catch(e){error.textContent=e.message;error.classList.remove('hidden')}finally{$('#loginBtn').disabled=false}};
 $('#logoutBtn').onclick=()=>{if(!session)return;localStorage.removeItem('fedusaStaffToken');session='';location.reload()};
-document.querySelectorAll('.mode-choice').forEach(btn=>{
-    btn.onclick=()=>{
-        mode=btn.dataset.mode;
+document.querySelectorAll('.mode-choice').forEach(btn=>btn.onclick=async()=>{mode=btn.dataset.mode;$('#scanTitle').textContent=mode==='voting'?'VOTING SESSION CHECK-IN':'CONGRESS CHECK-IN';show('scanScreen');await startCameraScanner();setTimeout(()=>$('#code').focus(),100)});
+$('#backBtn').onclick=async()=>{await stopCameraScanner();show('modeScreen')};$('#scanNextBtn').onclick=async()=>{show('scanScreen');$('#code').value='';scanLocked=false;await startCameraScanner();setTimeout(()=>$('#code').focus(),100)};
 
-        $('#scanTitle').textContent =
-        mode==='voting'
-        ? 'VOTING SESSION CHECK-IN'
-        : 'CONGRESS CHECK-IN';
-
-        show('scanScreen');
-
-        setTimeout(()=>{
-            startCameraScanner();
-        },500);
-    };
-});
-$('#backBtn').onclick=()=>show('modeScreen');$('#scanNextBtn').onclick=()=>{show('scanScreen');$('#code').value='';setTimeout(()=>$('#code').focus(),100)};
-async function scan(){const value=$('#code').value.trim();if(!value)return;$('#scanBtn').disabled=true;try{const r=await fetch('/api/checkin-sync',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({token:session,checkins:[{localId:crypto.randomUUID?.()||String(Date.now()),code:value,mode,method:'scan',scannedAt:new Date().toISOString()}]})});const d=await r.json();if(r.status===401){localStorage.removeItem('fedusaStaffToken');location.reload();return}if(!r.ok)throw new Error(d.error||'Scan failed');renderResult(d.results[0])}catch(e){renderResult({status:'not_found',delegate:null,error:e.message})}finally{$('#scanBtn').disabled=false}}
-function fmt(value){if(!value)return '—';try{return new Date(value).toLocaleString('en-ZA',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'short'})}catch{return value}}
-function renderResult(x){const d=x.delegate||{};let kind='success',symbol='✓',title=mode==='voting'?'VOTING MEMBER VERIFIED':'CHECK-IN SUCCESSFUL';if(x.status==='duplicate'){kind='duplicate';symbol='!';title='ALREADY CHECKED IN'}else if(x.status==='not_eligible'){kind='denied';symbol='×';title='NOT A VOTING MEMBER'}else if(x.status!=='checked_in'){kind='denied';symbol='×';title=x.error?'SCAN FAILED':'BADGE NOT FOUND'}$('#resultHero').className='result-hero '+kind;$('#resultSymbol').textContent=symbol;$('#resultTitle').textContent=title;$('#scanNextBtn').className='scan-next '+(kind==='success'?'':kind);$('#delegateName').textContent=d.fullName||'Unknown delegate';const isAffiliate=d.registrationType==='affiliate';$('#delegateType').textContent=isAffiliate?'AFFILIATE DELEGATE':'VIP DELEGATE';$('#delegateType').className='delegate-type '+(isAffiliate?'affiliate':'vip');$('#delegateOrg').textContent=d.affiliate||d.jobTitle||'FEDUSA';$('#badgeId').textContent=d.badgeId||'—';$('#votingStatus').textContent=d.votingMember==='Yes'?'YES ✓':'NO ×';const current=mode==='voting'?d.votingCheckedInAt:d.checkedInAt;$('#timeLabel').textContent=mode==='voting'?'ADMITTED':'CHECKED IN';$('#checkTime').textContent=fmt(current||new Date());const prev=mode==='voting'?d.votingCheckedInAt:d.checkedInAt;$('#previousRow').classList.toggle('hidden',x.status!=='duplicate');$('#previousTime').textContent=fmt(prev);$('#delegatePhoto').src=d.headshotKey?`/api/asset/${encodeURIComponent(d.headshotKey)}?token=${encodeURIComponent(session)}`:'/assets/hero-placeholder.svg';show('resultScreen')}
-let qrScanner=null;
-
+function showCameraError(message){const el=$('#cameraError');el.textContent=message;el.classList.remove('hidden');$('#scanHint').textContent='Use manual badge entry below if needed.'}
+function clearCameraError(){$('#cameraError').classList.add('hidden');$('#cameraError').textContent='';$('#scanHint').textContent='Position QR code within the frame'}
+async function stopCameraScanner(){if(!scanner||!scannerRunning)return;try{await scanner.stop()}catch(e){console.warn('Scanner stop failed',e)}finally{scannerRunning=false;try{scanner.clear()}catch{}}}
 async function startCameraScanner(){
-
-    if(qrScanner){
-        return;
-    }
-
-    qrScanner = new Html5Qrcode("reader");
-
-    try {
-
-        await qrScanner.start(
-            {
-                facingMode:"environment"
-            },
-            {
-                fps:10,
-                qrbox:{
-                    width:250,
-                    height:250
-                }
-            },
-            qrCodeMessage => {
-
-                $('#code').value = qrCodeMessage;
-
-                qrScanner.stop().then(()=>{
-                    qrScanner.clear();
-                    qrScanner=null;
-                    scan();
-                });
-
-            },
-            errorMessage => {
-
-            }
-        );
-
-    } catch(err){
-        console.error("Camera error:",err);
-        alert("Camera could not start: "+err);
-    }
+  clearCameraError();
+  if(!window.isSecureContext&&location.hostname!=='localhost'){showCameraError('Camera access requires HTTPS. Open the deployed Netlify URL, not a local file.');return}
+  if(typeof Html5Qrcode==='undefined'){showCameraError('QR scanner library did not load. Check the internet connection and reload this page.');return}
+  await stopCameraScanner();
+  scanner=new Html5Qrcode('reader');
+  try{
+    await scanner.start(
+      {facingMode:{ideal:'environment'}},
+      {fps:10,qrbox:{width:250,height:250},aspectRatio:1.0,disableFlip:false},
+      async decodedText=>{
+        if(scanLocked)return;
+        scanLocked=true;
+        $('#code').value=decodedText;
+        await stopCameraScanner();
+        await scan('camera');
+      },
+      ()=>{}
+    );
+    scannerRunning=true;
+  }catch(error){
+    scannerRunning=false;
+    console.error('Camera could not start:',error);
+    const text=String(error&&error.message||error||'');
+    if(/permission|denied|notallowed/i.test(text))showCameraError('Camera permission was denied. Allow camera access in the browser settings, then reload.');
+    else if(/notfound|device/i.test(text))showCameraError('No usable rear camera was found on this device.');
+    else showCameraError('Camera could not start. Confirm camera permission, HTTPS, and that no other app is using the camera.');
+  }
 }
-					
-$('#scanBtn').onclick=scan;$('#code').onkeydown=e=>{if(e.key==='Enter')scan()};
+
+async function scan(method='manual'){const value=$('#code').value.trim();if(!value)return;$('#scanBtn').disabled=true;try{const r=await fetch('/api/checkin-sync',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({token:session,checkins:[{localId:crypto.randomUUID?.()||String(Date.now()),code:value,mode,method,scannedAt:new Date().toISOString()}]})});const d=await r.json();if(r.status===401){localStorage.removeItem('fedusaStaffToken');location.reload();return}if(!r.ok)throw new Error(d.error||'Scan failed');renderResult(d.results[0])}catch(e){renderResult({status:'not_found',delegate:null,error:e.message})}finally{$('#scanBtn').disabled=false}}
+function fmt(value){if(!value)return '—';try{return new Date(value).toLocaleString('en-ZA',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'short'})}catch{return value}}
+function renderResult(x){stopCameraScanner();const d=x.delegate||{};let kind='success',symbol='✓',title=mode==='voting'?'VOTING MEMBER VERIFIED':'CHECK-IN SUCCESSFUL';if(x.status==='duplicate'){kind='duplicate';symbol='!';title='ALREADY CHECKED IN'}else if(x.status==='not_eligible'){kind='denied';symbol='×';title='NOT A VOTING MEMBER'}else if(x.status!=='checked_in'){kind='denied';symbol='×';title=x.error?'SCAN FAILED':'BADGE NOT FOUND'}$('#resultHero').className='result-hero '+kind;$('#resultSymbol').textContent=symbol;$('#resultTitle').textContent=title;$('#scanNextBtn').className='scan-next '+(kind==='success'?'':kind);$('#delegateName').textContent=d.fullName||'Unknown delegate';const isAffiliate=d.registrationType==='affiliate';$('#delegateType').textContent=isAffiliate?'AFFILIATE DELEGATE':'VIP DELEGATE';$('#delegateType').className='delegate-type '+(isAffiliate?'affiliate':'vip');$('#delegateOrg').textContent=d.affiliate||d.jobTitle||'FEDUSA';$('#badgeId').textContent=d.badgeId||'—';$('#votingStatus').textContent=d.votingMember==='Yes'?'YES ✓':'NO ×';const current=mode==='voting'?d.votingCheckedInAt:d.checkedInAt;$('#timeLabel').textContent=mode==='voting'?'ADMITTED':'CHECKED IN';$('#checkTime').textContent=fmt(current||new Date());const prev=mode==='voting'?d.votingCheckedInAt:d.checkedInAt;$('#previousRow').classList.toggle('hidden',x.status!=='duplicate');$('#previousTime').textContent=fmt(prev);$('#delegatePhoto').src=d.headshotKey?`/api/asset/${encodeURIComponent(d.headshotKey)}?token=${encodeURIComponent(session)}`:'/assets/hero-placeholder.svg';show('resultScreen')}
+$('#scanBtn').onclick=()=>scan('manual');$('#code').onkeydown=e=>{if(e.key==='Enter')scan('manual')};window.addEventListener('pagehide',()=>stopCameraScanner());document.addEventListener('visibilitychange',()=>{if(document.hidden)stopCameraScanner()});
 </script>
 </body></html>

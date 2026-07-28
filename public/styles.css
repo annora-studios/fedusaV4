@@ -32,3 +32,6 @@
     width: auto;
     height: auto;
 }
+
+/* v5.3 multilingual registration */
+.topbar-actions{display:flex;align-items:center;gap:14px}.language-picker{display:flex;align-items:center;gap:7px;background:#fff;border:1px solid #d8e0eb;border-radius:8px;padding:5px 8px;color:#102043}.language-picker select{border:0;background:transparent;color:#102043;font:inherit;font-weight:700;outline:none;cursor:pointer}@media(max-width:650px){.topbar-actions{gap:7px}.secure-label{display:none}.language-picker select{max-width:115px}}
