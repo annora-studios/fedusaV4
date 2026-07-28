@@ -2,7 +2,7 @@ import { assetsStore, recordsStore, json, id, token, now, dataUrlToBuffer, makeQ
 import { sendConfirmation } from './_email.js';
 function validateFlight(f){if(!f||f.status==='Not booked')return;if(!f.airline||!f.flightNumber||!f.date||!f.time)throw new Error('Complete all booked flight details or select No flight booked yet.');}
 export default async(req)=>{if(req.method!=='POST')return json({error:'Method not allowed'},405);try{
- const body=await req.json(); const language=['en','af','fr','pt','es'].includes(body.language)?body.language:'en'; if(!['affiliate','main'].includes(body.registrationType))return json({error:'Select a valid registration type.'},400);
+ const body=await req.json(); const language=['en','fr','pt','es'].includes(body.language)?body.language:'en'; if(!['affiliate','main'].includes(body.registrationType))return json({error:'Select a valid registration type.'},400);
  if(body.registrationType==='affiliate'&&(!body.affiliate||!body.primaryContact?.fullName||!body.primaryContact?.email||!Array.isArray(body.attendees)||!body.attendees.length))return json({error:'Affiliate and logistics contact information is required.'},400);
  if(body.registrationType==='main'&&!body.delegate)return json({error:'Main delegate information is required.'},400);
  const people=body.registrationType==='affiliate'?body.attendees:[body.delegate];
