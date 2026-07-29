@@ -21,7 +21,7 @@
 
 <section id="scanScreen" class="screen"><div class="scanner-top"><button class="icon-btn" id="backBtn">←</button><strong id="scanTitle">CONGRESS CHECK-IN</strong><button class="icon-btn" title="Flashlight">⚡</button></div><div class="camera-stage"><div id="reader" class="camera-reader"></div><div class="scan-frame"><i></i><i></i><i></i><i></i><div class="scan-line"></div></div><div class="scan-hint" id="scanHint">Position QR code within the frame</div><div id="cameraError" class="camera-error hidden"></div></div><div class="manual-entry"><input id="code" placeholder="Scan QR or enter badge ID" autocomplete="off"><button id="scanBtn">SCAN</button></div></section>
 
-<section id="resultScreen" class="screen result-screen"><div id="resultHero" class="result-hero success"><div id="resultSymbol" class="result-symbol">✓</div><div id="resultTitle" class="result-title">CHECK-IN SUCCESSFUL</div></div><img id="delegatePhoto" class="delegate-photo" src="/assets/hero-placeholder.svg" alt="Delegate"><div class="result-body"><h2 id="delegateName">Delegate Name</h2><div id="delegateType" class="delegate-type vip">VIP DELEGATE</div><div id="delegateOrg">FEDUSA</div><div class="result-meta"><div class="meta-row"><span>BADGE ID</span><b id="badgeId">—</b></div><div class="meta-row"><span>VOTING MEMBER</span><b id="votingStatus">—</b></div><div class="meta-row"><span id="timeLabel">CHECKED IN</span><b id="checkTime">—</b></div><div id="previousRow" class="meta-row hidden"><span>PREVIOUS CHECK-IN</span><b id="previousTime">—</b></div></div><button id="scanNextBtn" class="scan-next">SCAN NEXT</button></div></section>
+<section id="resultScreen" class="screen result-screen"><div id="resultHero" class="result-hero success"><div id="resultSymbol" class="result-symbol">✓</div><div id="resultTitle" class="result-title">CHECK-IN SUCCESSFUL</div></div><img id="delegatePhoto" class="delegate-photo" src="/assets/hero-placeholder.svg" alt="Delegate"><div class="result-body"><h2 id="delegateName">Delegate Name</h2><div id="delegateType" class="delegate-type vip">VIP DELEGATE</div><div id="delegateOrg">FEDUSA</div><div class="result-meta"><div class="meta-row"><span>BADGE ID</span><b id="badgeId">—</b></div><div class="meta-row"><span>VOTING STATUS</span><b id="votingStatus">—</b></div><div class="meta-row"><span id="timeLabel">CHECKED IN</span><b id="checkTime">—</b></div><div id="previousRow" class="meta-row hidden"><span>PREVIOUS CHECK-IN</span><b id="previousTime">—</b></div></div><button id="scanNextBtn" class="scan-next">SCAN NEXT</button></div></section>
 </section>
 </main>
 <script>
@@ -38,40 +38,42 @@ $('#backBtn').onclick=async()=>{await stopCameraScanner();show('modeScreen')};$(
 
 function showCameraError(message){const el=$('#cameraError');el.textContent=message;el.classList.remove('hidden');$('#scanHint').textContent='Use manual badge entry below if needed.'}
 function clearCameraError(){$('#cameraError').classList.add('hidden');$('#cameraError').textContent='';$('#scanHint').textContent='Position QR code within the frame'}
-async function stopCameraScanner(){if(!scanner||!scannerRunning)return;try{await scanner.stop()}catch(e){console.warn('Scanner stop failed',e)}finally{scannerRunning=false;try{scanner.clear()}catch{}}}
+async function stopCameraScanner(){
+  if(scanner){try{if(scannerRunning)await scanner.stop()}catch(e){console.warn('Scanner stop failed',e)}try{scanner.clear()}catch(e){console.warn('Scanner clear failed',e)}}
+  scannerRunning=false;scanner=null;
+  document.querySelectorAll('#reader video').forEach(v=>{try{v.srcObject?.getTracks().forEach(t=>t.stop())}catch{};v.remove()});
+  $('#reader').innerHTML='';
+}
+async function startWithCamera(cameraConfig){
+  scanner=new Html5Qrcode('reader');
+  await scanner.start(cameraConfig,{fps:10,qrbox:{width:250,height:250},aspectRatio:1.0,disableFlip:false},async decodedText=>{if(scanLocked)return;scanLocked=true;$('#code').value=decodedText;await stopCameraScanner();await scan('camera')},()=>{});
+  scannerRunning=true;
+}
 async function startCameraScanner(){
-  clearCameraError();
+  clearCameraError();scanLocked=false;
   if(!window.isSecureContext&&location.hostname!=='localhost'){showCameraError('Camera access requires HTTPS. Open the deployed Netlify URL, not a local file.');return}
   if(typeof Html5Qrcode==='undefined'){showCameraError('QR scanner library did not load. Check the internet connection and reload this page.');return}
   await stopCameraScanner();
-  scanner=new Html5Qrcode('reader');
   try{
-    await scanner.start(
-      {facingMode:{ideal:'environment'}},
-      {fps:10,qrbox:{width:250,height:250},aspectRatio:1.0,disableFlip:false},
-      async decodedText=>{
-        if(scanLocked)return;
-        scanLocked=true;
-        $('#code').value=decodedText;
-        await stopCameraScanner();
-        await scan('camera');
-      },
-      ()=>{}
-    );
-    scannerRunning=true;
+    try{await startWithCamera({facingMode:'environment'});return}catch(firstError){console.warn('Rear camera start failed, trying available cameras',firstError);await stopCameraScanner()}
+    const cameras=await Html5Qrcode.getCameras();
+    if(!cameras?.length)throw new Error('NotFoundError: No camera devices found');
+    const preferred=cameras.find(c=>/back|rear|environment/i.test(c.label))||cameras[cameras.length-1]||cameras[0];
+    await startWithCamera(preferred.id);
   }catch(error){
-    scannerRunning=false;
+    await stopCameraScanner();
     console.error('Camera could not start:',error);
     const text=String(error&&error.message||error||'');
-    if(/permission|denied|notallowed/i.test(text))showCameraError('Camera permission was denied. Allow camera access in the browser settings, then reload.');
-    else if(/notfound|device/i.test(text))showCameraError('No usable rear camera was found on this device.');
-    else showCameraError('Camera could not start. Confirm camera permission, HTTPS, and that no other app is using the camera.');
+    if(/permission|denied|notallowed|security/i.test(text))showCameraError('Camera permission was denied or blocked. Allow camera access for this site, then tap the check-in mode again.');
+    else if(/notfound|no camera|devices found/i.test(text))showCameraError('No camera was found. Connect or enable a camera, or use manual badge entry below.');
+    else if(/notreadable|trackstart|could not start|in use/i.test(text))showCameraError('The camera is busy or unavailable. Close other camera apps or tabs, then try again.');
+    else showCameraError('The camera could not start. Check site permission and try again, or use manual badge entry below.');
   }
 }
 
 async function scan(method='manual'){const value=$('#code').value.trim();if(!value)return;$('#scanBtn').disabled=true;try{const r=await fetch('/api/checkin-sync',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({token:session,checkins:[{localId:crypto.randomUUID?.()||String(Date.now()),code:value,mode,method,scannedAt:new Date().toISOString()}]})});const d=await r.json();if(r.status===401){localStorage.removeItem('fedusaStaffToken');location.reload();return}if(!r.ok)throw new Error(d.error||'Scan failed');renderResult(d.results[0])}catch(e){renderResult({status:'not_found',delegate:null,error:e.message})}finally{$('#scanBtn').disabled=false}}
 function fmt(value){if(!value)return '—';try{return new Date(value).toLocaleString('en-ZA',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'short'})}catch{return value}}
-function renderResult(x){stopCameraScanner();const d=x.delegate||{};let kind='success',symbol='✓',title=mode==='voting'?'VOTING MEMBER VERIFIED':'CHECK-IN SUCCESSFUL';if(x.status==='duplicate'){kind='duplicate';symbol='!';title='ALREADY CHECKED IN'}else if(x.status==='not_eligible'){kind='denied';symbol='×';title='NOT A VOTING MEMBER'}else if(x.status!=='checked_in'){kind='denied';symbol='×';title=x.error?'SCAN FAILED':'BADGE NOT FOUND'}$('#resultHero').className='result-hero '+kind;$('#resultSymbol').textContent=symbol;$('#resultTitle').textContent=title;$('#scanNextBtn').className='scan-next '+(kind==='success'?'':kind);$('#delegateName').textContent=d.fullName||'Unknown delegate';const isAffiliate=d.registrationType==='affiliate';$('#delegateType').textContent=isAffiliate?'AFFILIATE DELEGATE':'VIP DELEGATE';$('#delegateType').className='delegate-type '+(isAffiliate?'affiliate':'vip');$('#delegateOrg').textContent=d.affiliate||d.jobTitle||'FEDUSA';$('#badgeId').textContent=d.badgeId||'—';$('#votingStatus').textContent=d.votingMember==='Yes'?'YES ✓':'NO ×';const current=mode==='voting'?d.votingCheckedInAt:d.checkedInAt;$('#timeLabel').textContent=mode==='voting'?'ADMITTED':'CHECKED IN';$('#checkTime').textContent=fmt(current||new Date());const prev=mode==='voting'?d.votingCheckedInAt:d.checkedInAt;$('#previousRow').classList.toggle('hidden',x.status!=='duplicate');$('#previousTime').textContent=fmt(prev);$('#delegatePhoto').src=d.headshotKey?`/api/asset/${encodeURIComponent(d.headshotKey)}?token=${encodeURIComponent(session)}`:'/assets/hero-placeholder.svg';show('resultScreen')}
+function renderResult(x){stopCameraScanner();const d=x.delegate||{};let kind='success',symbol='✓',title=mode==='voting'?'VOTING DELEGATE VERIFIED':'CONGRESS CHECK-IN SUCCESSFUL';if(x.status==='duplicate'){kind='duplicate';symbol='!';title=mode==='voting'?'VOTING CHECK-IN ALREADY RECORDED':'CONGRESS CHECK-IN ALREADY RECORDED'}else if(x.status==='congress_checkin_required'){kind='denied';symbol='×';title='CONGRESS CHECK-IN REQUIRED'}else if(x.status==='not_eligible'){kind='denied';symbol='×';title='NOT ELIGIBLE FOR VOTING'}else if(x.status!=='checked_in'){kind='denied';symbol='×';title=x.error?'SCAN FAILED':'BADGE NOT FOUND'}$('#resultHero').className='result-hero '+kind;$('#resultSymbol').textContent=symbol;$('#resultTitle').textContent=title;$('#scanNextBtn').className='scan-next '+(kind==='success'?'':kind);$('#delegateName').textContent=d.fullName||'Unknown delegate';const isAffiliate=d.registrationType==='affiliate';$('#delegateType').textContent=isAffiliate?'AFFILIATE DELEGATE':'NOB / INTERNATIONAL DELEGATE';$('#delegateType').className='delegate-type '+(isAffiliate?'affiliate':'vip');$('#delegateOrg').textContent=d.affiliate||d.jobTitle||'FEDUSA';$('#badgeId').textContent=d.badgeId||'—';$('#votingStatus').textContent=d.votingStatus||(d.votingMember==='Yes'?'ELIGIBLE':'NOT ELIGIBLE');const current=mode==='voting'?d.votingCheckedInAt:d.checkedInAt;$('#timeLabel').textContent=mode==='voting'?'VOTING CHECK-IN':'CONGRESS CHECK-IN';$('#checkTime').textContent=fmt(current||(x.status==='checked_in'?new Date():null));const prev=mode==='voting'?d.votingCheckedInAt:d.checkedInAt;$('#previousRow').classList.toggle('hidden',x.status!=='duplicate');$('#previousTime').textContent=fmt(prev);$('#delegatePhoto').src=d.headshotKey?`/api/asset/${encodeURIComponent(d.headshotKey)}?token=${encodeURIComponent(session)}`:'/assets/hero-placeholder.svg';show('resultScreen')}
 $('#scanBtn').onclick=()=>scan('manual');$('#code').onkeydown=e=>{if(e.key==='Enter')scan('manual')};window.addEventListener('pagehide',()=>stopCameraScanner());document.addEventListener('visibilitychange',()=>{if(document.hidden)stopCameraScanner()});
 </script>
 </body></html>

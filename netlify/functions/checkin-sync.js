@@ -9,8 +9,12 @@ export default async(req)=>{
       const id=item.delegateId||getId(item.code);
       const d=rows.find(x=>x.delegateId===id||x.badgeId===item.code||x.badgeQrValue===item.code);
       if(!d){results.push({localId:item.localId,status:'not_found',mode});continue}
+      if(mode==='voting'&&!d.checkedInAt){
+        await appendAudit({registrationId:d.registrationId,delegateId:d.delegateId,actor:staff.name,action:'Voting access denied',details:{mode,reason:'Delegate has not completed congress check-in',location:item.location||staff.location||''}});
+        results.push({localId:item.localId,status:'congress_checkin_required',mode,delegate:summary(d)});continue
+      }
       if(mode==='voting'&&d.votingMember!=='Yes'){
-        await appendAudit({registrationId:d.registrationId,delegateId:d.delegateId,actor:staff.name,action:'Voting access denied',details:{mode,reason:'Delegate is not a voting member',location:item.location||staff.location||''}});
+        await appendAudit({registrationId:d.registrationId,delegateId:d.delegateId,actor:staff.name,action:'Voting access denied',details:{mode,reason:'Delegate is not eligible for voting',location:item.location||staff.location||''}});
         results.push({localId:item.localId,status:'not_eligible',mode,delegate:summary(d)});continue
       }
       const field=mode==='voting'?'votingCheckedInAt':'checkedInAt';
@@ -28,4 +32,4 @@ export default async(req)=>{
     return json({ok:true,results});
   }catch(e){return json({error:e.message},401)}
 };
-function summary(d){return{delegateId:d.delegateId,badgeId:d.badgeId,fullName:d.fullName,registrationType:d.registrationType,votingMember:d.votingMember,affiliate:d.affiliate||'',jobTitle:d.jobTitle||'',headshotKey:d.headshotKey||'',checkedInAt:d.checkedInAt||null,votingCheckedInAt:d.votingCheckedInAt||null,checkedInBy:d.checkedInBy||null,votingCheckedInBy:d.votingCheckedInBy||null}}
+function summary(d){return{delegateId:d.delegateId,badgeId:d.badgeId,fullName:d.fullName,registrationType:d.registrationType,votingStatus:d.votingStatus||(d.votingMember==='Yes'?'Primary Member':'Observer'),votingMember:d.votingMember,affiliate:d.affiliate||'',jobTitle:d.jobTitle||'',headshotKey:d.headshotKey||'',checkedInAt:d.checkedInAt||null,votingCheckedInAt:d.votingCheckedInAt||null,checkedInBy:d.checkedInBy||null,votingCheckedInBy:d.votingCheckedInBy||null}}

@@ -8,7 +8,8 @@ export default async(req)=>{try{const url=new URL(req.url),payload=req.method!==
  for(const update of body.people||[]){if(!reg.delegateIds.includes(update.delegateId))continue;const d=await store.get(`delegate/${update.delegateId}`,{type:'json'});if(!d)continue;
   for(const key of ['fullName','jobTitle','email','mobile','dietary','accessibility','shirtJacketSize','conferenceDates','inboundFlight','outboundFlight'])if(update[key]!==undefined)d[key]=update[key];
   d.normalizedEmail=normalizeEmail(d.email);d.normalizedMobile=normalizeMobile(d.mobile);
-  if(reg.registrationType==='main'){if(update.votingMember!==undefined)d.votingMember=update.votingMember==='Yes'?'Yes':'No';if(update.accommodation!==undefined)d.accommodation=update.accommodation;}
+  if(update.votingStatus!==undefined){d.votingStatus=update.votingStatus==='Primary Member'?'Primary Member':'Observer';d.votingMember=d.votingStatus==='Primary Member'?'Yes':'No';}
+  if(reg.registrationType==='main'){if(update.votingMember!==undefined){d.votingMember=update.votingMember==='Yes'?'Yes':'No';d.votingStatus=d.votingMember==='Yes'?'Primary Member':'Observer';}if(update.accommodation!==undefined)d.accommodation=update.accommodation;}
   if(update.headshot?.dataUrl){const up=dataUrlToBuffer(update.headshot.dataUrl);if(!['image/jpeg','image/png','image/webp'].includes(up.mime))throw new Error('Unsupported headshot format.');await assets.set(d.headshotKey,up.buffer,{metadata:{contentType:up.mime}});} d.updatedAt=now();await store.setJSON(`delegate/${d.delegateId}`,d);
  }
  if(reg.registrationType==='affiliate'&&body.primaryContact){reg.primaryContact={...reg.primaryContact,...body.primaryContact};reg.ownerEmail=reg.primaryContact.email;}else if(reg.registrationType==='main'&&body.people?.[0]?.email){reg.ownerEmail=body.people[0].email;}
