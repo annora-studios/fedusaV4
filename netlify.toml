@@ -27,6 +27,11 @@
   status = 200
 
 [[redirects]]
+  from = "/api/asset"
+  to = "/.netlify/functions/asset"
+  status = 200
+
+[[redirects]]
   from = "/api/asset/*"
   to = "/.netlify/functions/asset?key=:splat"
   status = 200

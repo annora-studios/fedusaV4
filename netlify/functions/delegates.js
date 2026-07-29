@@ -8,8 +8,8 @@ export default async (req) => {
     return json({ delegates: rows.map(x => ({
       ...x,
       primaryContact: undefined,
-      headshotUrl: `/api/asset/${encodeURIComponent(x.headshotKey)}?pin=${encodeURIComponent(url.searchParams.get("pin"))}`,
-      badgeQrUrl: `/api/asset/${encodeURIComponent(x.badgeQrKey)}?pin=${encodeURIComponent(url.searchParams.get("pin"))}`
+      headshotUrl: `/api/asset?key=${encodeURIComponent(x.headshotKey || '')}&pin=${encodeURIComponent(url.searchParams.get("pin"))}`,
+      badgeQrUrl: `/api/asset?key=${encodeURIComponent(x.badgeQrKey || '')}&pin=${encodeURIComponent(url.searchParams.get("pin"))}`
     }))});
   } catch (error) {
     return json({ error: error.message }, 401);
