@@ -1,0 +1,33 @@
+name: Reset FEDUSA Database
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: 'Type RESET FEDUSA DATA'
+        required: true
+        type: string
+
+jobs:
+  reset-database:
+    if: ${{ inputs.confirmation == 'RESET FEDUSA DATA' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Netlify Blobs
+        run: npm install @netlify/blobs
+
+      - name: Reset FEDUSA data
+        env:
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          CONFIRM_RESET: ${{ inputs.confirmation }}
+        run: node scripts/reset-fedusa-data.mjs
