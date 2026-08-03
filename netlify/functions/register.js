@@ -1,5 +1,5 @@
 import { assetsStore, recordsStore, json, id, token, now, dataUrlToBuffer, makeQr, appendAudit, assertNoHardDuplicate, duplicateCheck, normalizeEmail, normalizeMobile } from './_shared.js';
-import { sendConfirmation } from './_email.js';
+import { sendConfirmation, sendAdminNotification } from './_email.js';
 function validateFlight(f){if(!f||f.status==='Not booked')return;if(!f.airline||!f.flightNumber||!f.date||!f.time)throw new Error('Complete all booked flight details or select No flight booked yet.');}
 export default async(req)=>{if(req.method!=='POST')return json({error:'Method not allowed'},405);try{
  const body=await req.json(); const language=['en','fr','pt','es'].includes(body.language)?body.language:'en'; if(!['affiliate','main'].includes(body.registrationType))return json({error:'Select a valid registration type.'},400);
@@ -34,6 +34,6 @@ export default async(req)=>{if(req.method!=='POST')return json({error:'Method no
  const registration={registrationId,registrationType:body.registrationType,language,affiliate:body.affiliate||'',primaryContact:body.primaryContact||null,ownerEmail,delegateIds,delegateNames,editToken,status:'Submitted',createdAt:now(),updatedAt:now()};
  await records.setJSON(`registration/${registrationId}`,registration);registrationIndex.push(`registration/${registrationId}`);await records.setJSON('registrations-index',registrationIndex);await records.setJSON('delegates-index',delegateIndex);
  await appendAudit({registrationId,actor:'Registrant',action:'Registration submitted',details:{registrationType:body.registrationType,delegateIds,possibleWarnings}});
- const baseUrl=process.env.SITE_URL||new URL(req.url).origin; let email={skipped:true}; try{email=await sendConfirmation({to:ownerEmail,registration,baseUrl});}catch(e){console.error('Email error',e)}
+ const baseUrl=process.env.SITE_URL||new URL(req.url).origin; let email={skipped:true}; try{email=await sendConfirmation({to:ownerEmail,registration,baseUrl});}catch(e){console.error('Delegate email error',e)} try{await sendAdminNotification({type:body.registrationType==='affiliate'?'new-affiliate':'new-main',registration,baseUrl});}catch(e){console.error('Admin notification error',e)}
  return json({ok:true,registrationId,delegates:created,emailSent:!email?.skipped,possibleDuplicateWarnings:possibleWarnings},201);
 }catch(error){console.error(error);if(error.code==='DUPLICATE_DELEGATE'){await appendAudit({actor:'Registrant',action:'Duplicate registration blocked',details:{delegateId:error.match?.delegateId,registrationId:error.match?.registrationId}});return json({error:error.message,code:error.code},409)}return json({error:error.message||'Registration failed.'},400)}};

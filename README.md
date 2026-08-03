@@ -52,3 +52,14 @@ The platform uses Netlify Blobs and does not require a separate SQL database for
 - Management tokens are long random values and must be kept private.
 - Retrieval responses are intentionally neutral so they do not reveal whether a person is registered.
 - Duplicate checks are applied to new registrations and edits.
+
+## Email notifications (v5.4)
+
+Set these Netlify environment variables:
+
+- `RESEND_API_KEY` - Resend API key.
+- `EMAIL_FROM` - verified sender, for example `FEDUSA Congress <congress@fedusa.org.za>`.
+- `ADMIN_NOTIFICATION_EMAILS` - comma-separated admin recipients for new registration, update and cancellation alerts.
+- `SITE_URL` - production site URL used for secure management and admin links.
+
+Delegate-facing confirmation and update emails use the language selected during registration: English, French, Portuguese or Spanish. Admin alerts remain in English. Affiliate emails are sent only to the logistics contact.
