@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       confirmation:
-        description: 'Type RESET FEDUSA DATA'
+        description: "Type RESET FEDUSA DATA"
         required: true
         type: string
 
@@ -15,12 +15,13 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: "20"
+          node-version: "24"
+          package-manager-cache: false
 
       - name: Install Netlify Blobs
         run: npm install @netlify/blobs
