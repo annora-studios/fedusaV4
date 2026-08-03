@@ -5,6 +5,26 @@ function client(){
   if(!process.env.RESEND_API_KEY || !process.env.EMAIL_FROM) return null;
   return new Resend(process.env.RESEND_API_KEY);
 }
+
+function sleep(ms){return new Promise(resolve=>setTimeout(resolve,ms));}
+async function sendEmail(resend,payload,{retries=3,initialDelay=0}={}){
+  if(initialDelay>0)await sleep(initialDelay);
+  let lastError=null;
+  for(let attempt=0;attempt<retries;attempt++){
+    const result=await resend.emails.send(payload);
+    if(!result?.error)return result;
+    lastError=result.error;
+    const status=Number(result.error.statusCode||result.error.status||0);
+    const retryable=status===429||status>=500||/rate|timeout|temporar/i.test(String(result.error.message||''));
+    if(!retryable||attempt===retries-1)break;
+    await sleep(700*(attempt+1));
+  }
+  const message=lastError?.message||'Email delivery failed';
+  const error=new Error(message);
+  error.details=lastError;
+  throw error;
+}
+
 function esc(value=''){return String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
 function manageUrl(baseUrl,registration){return `${baseUrl}/manage.html?token=${encodeURIComponent(registration.editToken)}`;}
 function adminUrl(baseUrl){return `${baseUrl}/admin.html`;}
@@ -42,11 +62,11 @@ export async function sendConfirmation({to,registration,baseUrl,updated=false,ch
   const affiliate=registration.registrationType==='affiliate',url=manageUrl(baseUrl,registration),c=languageCopy(registration),people=await hydratePeople(registration);
   const subject=updated?c.subjectUpdated:affiliate?c.subjectAffiliate:c.subjectReceived;
   const body=`<h2>${esc(updated?c.updated:c.received)}</h2><p>${esc(c.reference)}: <strong>${esc(registration.registrationId)}</strong></p>${affiliate?`<p>${esc(c.affiliate)}: <strong>${esc(registration.affiliate)}</strong></p><h3>${esc(c.attendees)}</h3>${attendeeTable(people)}`:`<h3>${esc(c.summary)}</h3>${delegateSummary(people[0])}`}${updated?`<h3>${esc(c.changes)}</h3>${changeList(changes,c)}`:''}<p>${esc(c.instruction)}</p>${button(url,affiliate?c.manageAffiliate:c.manageMine)}<p style="font-size:12px;color:#667085">${esc(c.privacy)}</p>`;
-  return resend.emails.send({from:process.env.EMAIL_FROM,to:[to],subject,html:shell(c.title,body)});
+  return sendEmail(resend,{from:process.env.EMAIL_FROM,to:[to],subject,html:shell(c.title,body)});
 }
 export async function sendManageLink({to,registration,baseUrl}){
   const resend=client();if(!resend)return {skipped:true};const affiliate=registration.registrationType==='affiliate',c=languageCopy(registration),url=manageUrl(baseUrl,registration);
-  return resend.emails.send({from:process.env.EMAIL_FROM,to:[to],subject:`${c.title} - ${c.reference}`,html:shell(c.title,`<h2>${esc(c.reference)}</h2><p><strong>${esc(registration.registrationId)}</strong></p>${button(url,affiliate?c.manageAffiliate:c.manageMine)}<p style="font-size:12px;color:#667085">${esc(c.privacy)}</p>`) });
+  return sendEmail(resend,{from:process.env.EMAIL_FROM,to:[to],subject:`${c.title} - ${c.reference}`,html:shell(c.title,`<h2>${esc(c.reference)}</h2><p><strong>${esc(registration.registrationId)}</strong></p>${button(url,affiliate?c.manageAffiliate:c.manageMine)}<p style="font-size:12px;color:#667085">${esc(c.privacy)}</p>`) });
 }
 export async function sendAdminNotification({type,registration,baseUrl,changes=[],actor='',cancelledAt=''}){
   const resend=client(),to=adminRecipients();if(!resend||!to.length)return {skipped:true,reason:'Admin email is not configured'};
@@ -57,5 +77,5 @@ export async function sendAdminNotification({type,registration,baseUrl,changes=[
   else if(type==='cancelled'){subject='FEDUSA Registration Cancelled';heading='Registration cancelled';details=`<table style="width:100%;border-collapse:collapse">${field('Name / Affiliate',registration.registrationType==='affiliate'?registration.affiliate:people[0]?.fullName)}${field('Cancelled at',cancelledAt||registration.cancelledAt)}${field('Cancelled by',actor||'Admin')}</table>`;}
   else return {skipped:true,reason:'Unknown notification type'};
   const body=`<h2>${esc(heading)}</h2><p>Registration reference: <strong>${esc(registration.registrationId)}</strong></p>${details}${button(adminUrl(baseUrl),'Open Admin Portal')}`;
-  return resend.emails.send({from:process.env.EMAIL_FROM,to,subject:`${subject} - ${registration.registrationId}`,html:shell('FEDUSA Admin Notification',body)});
+  return sendEmail(resend,{from:process.env.EMAIL_FROM,to,subject:`${subject} - ${registration.registrationId}`,html:shell('FEDUSA Admin Notification',body)},{initialDelay:650});
 }
