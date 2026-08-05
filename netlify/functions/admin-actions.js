@@ -1,4 +1,4 @@
-import {json,requireAdmin,recordsStore,appendAudit,now,token,readAudit} from './_shared.js';
+import {json,requireAdmin,recordsStore,assetsStore,appendAudit,now,token,readAudit} from './_shared.js';
 import {sendConfirmation,sendAdminNotification} from './_email.js';
 export default async(req)=>{try{
  const url=new URL(req.url);if(req.method==='GET'){requireAdmin(url.searchParams.get('pin'));return json({audit:await readAudit(Number(url.searchParams.get('limit')||200))});}
@@ -11,6 +11,27 @@ export default async(req)=>{try{
   if(reg.status==='Cancelled')return json({ok:true,alreadyCancelled:true});reg.status='Cancelled';reg.cancelledAt=now();reg.updatedAt=reg.cancelledAt;await store.setJSON(`registration/${reg.registrationId}`,reg);
   for(const delegateId of reg.delegateIds||[]){const row=await store.get(`delegate/${delegateId}`,{type:'json'});if(row){row.registrationStatus='Cancelled';row.updatedAt=reg.cancelledAt;await store.setJSON(`delegate/${delegateId}`,row);}}
   await appendAudit({registrationId:reg.registrationId,actor:'Admin',action:'Registration cancelled'});try{await sendAdminNotification({type:'cancelled',registration:reg,baseUrl,actor:'Admin',cancelledAt:reg.cancelledAt});}catch(e){console.error('Cancellation notification error',e)}return json({ok:true});
+ }
+ if(b.action==='delete'){
+  if(b.confirmation!=='CONFIRMED')return json({error:'Deletion confirmation is required.'},400);
+  const assets=assetsStore();
+  const delegateIds=Array.isArray(reg.delegateIds)?reg.delegateIds:[];
+  const deletedDelegates=[];
+  for(const delegateId of delegateIds){
+   const row=await store.get(`delegate/${delegateId}`,{type:'json'});
+   if(row){
+    if(row.headshotKey){try{await assets.delete(row.headshotKey);}catch(e){console.error('Headshot delete error',row.headshotKey,e)}}
+    if(row.badgeQrKey){try{await assets.delete(row.badgeQrKey);}catch(e){console.error('QR delete error',row.badgeQrKey,e)}}
+    await store.delete(`delegate/${delegateId}`);deletedDelegates.push(delegateId);
+   }
+  }
+  const delegateIndex=(await store.get('delegates-index',{type:'json'}))||[];
+  await store.setJSON('delegates-index',delegateIndex.filter(key=>!delegateIds.some(id=>key===`delegate/${id}`)));
+  const registrationIndex=(await store.get('registrations-index',{type:'json'}))||[];
+  await store.setJSON('registrations-index',registrationIndex.filter(key=>key!==`registration/${reg.registrationId}`));
+  await store.delete(`registration/${reg.registrationId}`);
+  await appendAudit({registrationId:reg.registrationId,actor:'Admin',action:'Registration permanently deleted',details:{registrationType:reg.registrationType,ownerEmail:reg.ownerEmail,delegateIds:deletedDelegates,delegateNames:reg.delegateNames||[]}});
+  return json({ok:true,deletedRegistrationId:reg.registrationId,deletedDelegateIds:deletedDelegates});
  }
  if(b.action==='change-category'){
   if(!d)return json({error:'Delegate not found.'},404);const target=b.registrationType;if(!['main','affiliate'].includes(target))return json({error:'Invalid registration type.'},400);
