@@ -8,7 +8,7 @@
 <style>
 :root{--badge-width:95mm;--badge-height:145mm;--badge-navy:#0c3b60;--badge-green:#00833e}
 .badge-controls{max-width:1100px;margin:24px auto;padding:20px;background:white;border-radius:14px;box-shadow:0 8px 24px #11223a17}
-.badge-controls .row{display:flex;gap:12px;align-items:end;flex-wrap:wrap}.badge-controls label{flex:1;min-width:220px}.badge-controls input{display:block;width:100%}.print-help{margin:16px 0 0;font-size:14px;line-height:1.5;color:#536275}button:disabled{opacity:.5;cursor:not-allowed}
+.badge-controls .row{display:flex;gap:12px;align-items:end;flex-wrap:wrap}.badge-controls label{flex:1;min-width:220px}.badge-controls input{display:block;width:100%}.print-help{margin:16px 0 0;font-size:14px;line-height:1.5;color:#536275}button:disabled{opacity:.5;cursor:not-allowed}.print-warning{margin-top:14px;padding:12px 15px;border:1px solid #d6b251;background:#fff9e9;border-radius:8px;color:#513f16;font-size:14px;line-height:1.45}.print-warning ul{margin:6px 0 0;padding-left:21px}.print-warning li{margin-bottom:4px}
 .badge-sheet{padding:20px}.badge-page{margin:0 auto 28px;width:190mm;background:white;box-shadow:0 5px 22px #001b3d24}.badge-pair{display:flex;justify-content:center;height:145mm}.badge-pair+.badge-pair{margin-top:1mm}.badge-wrap{width:95mm;height:145mm;flex:none}.badge-wrap+.badge-wrap{margin-left:0}
 .badge{position:relative;box-sizing:border-box;width:95mm;height:145mm;flex:none;overflow:hidden;background:white;color:#111;font-family:Arial,Helvetica,sans-serif}.badge-art{position:absolute;left:0;width:95mm;display:block}.front-header{top:0;height:32.5mm}.front-footer{top:125.8mm;height:19.2mm}.back-footer{top:102.5mm;height:42.5mm}
 .portrait{position:absolute;top:39mm;left:25.5mm;width:44mm;height:44mm;padding:1.3mm;border:.2mm solid var(--badge-green);border-radius:50%;background:white}.photo{display:block;width:100%;height:100%;object-fit:cover;object-position:center;border-radius:50%;background:#edf1f5}
@@ -44,12 +44,12 @@ body:not([data-print-ready="true"]) .badge-sheet{display:none}body:not([data-pri
 <section class="badge-controls">
 <div class="row"><label for="pin">Admin PIN<input id="pin" type="password" autocomplete="current-password"></label><button class="primary-btn" id="load">Load badges</button><button class="outline-btn" id="print-badges" disabled>Print badges</button></div>
 <p class="print-help"><strong>Two complete badges per A4 sheet.</strong> Each row is one <strong>190 × 145 mm strip</strong>: front on the left, back on the right, with <strong>no gap</strong> between them. Cut around each complete strip, then fold down its centre to make a <strong>95 × 145 mm badge</strong>. Print at <strong>100% / Actual size</strong>, with headers and footers off and background graphics on. The layout uses 3 mm top/bottom margins, 10 mm side margins and a 1 mm gap between the two strips.</p>
-<p id="status" role="status" aria-live="polite"></p><div id="msg" class="error hidden" role="alert"></div>
+<p id="status" role="status" aria-live="polite">Enter your Admin PIN and select Load badges. Print becomes available when the badges are ready.</p><div id="msg" class="error hidden" role="alert"></div><div id="warnings" class="print-warning hidden" role="status" aria-live="polite"></div>
 </section>
 <p class="print-not-ready">Badges are not ready to print. Load the badges and wait for all photographs and QR codes to finish loading.</p>
 <main id="badges" class="badge-sheet"></main>
 <script>
-const pin=document.querySelector('#pin'),badges=document.querySelector('#badges'),msg=document.querySelector('#msg'),printButton=document.querySelector('#print-badges'),loadButton=document.querySelector('#load'),status=document.querySelector('#status');
+const pin=document.querySelector('#pin'),badges=document.querySelector('#badges'),msg=document.querySelector('#msg'),warnings=document.querySelector('#warnings'),printButton=document.querySelector('#print-badges'),loadButton=document.querySelector('#load'),status=document.querySelector('#status');
 pin.value=sessionStorage.adminPin||'';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function front(x){
@@ -91,34 +91,107 @@ function fitBadgeText(){
  return fits;
 }
 function imageReady(img){
- if(!img.getAttribute('src'))return Promise.reject(new Error('A badge photograph or QR code is missing. Please update the delegate record and reload.'));
- if(img.complete)return img.naturalWidth?Promise.resolve():Promise.reject(new Error('A badge image could not load. Please check the connection and reload.'));
+ if(!img.getAttribute('src'))return Promise.reject(new Error('Missing image address'));
+ if(img.complete)return img.naturalWidth?Promise.resolve():Promise.reject(new Error('Image did not load'));
  return new Promise((resolve,reject)=>{
-  const timer=setTimeout(()=>reject(new Error('Badge images are still loading. Please check the connection and reload.')),30000);
+  const timer=setTimeout(()=>reject(new Error('Image timed out')),45000);
   img.addEventListener('load',()=>{clearTimeout(timer);resolve();},{once:true});
-  img.addEventListener('error',()=>{clearTimeout(timer);reject(new Error('A badge image could not load. Please check the connection and reload.'));},{once:true});
+  img.addEventListener('error',()=>{clearTimeout(timer);reject(new Error('Image did not load'));},{once:true});
  });
 }
+function showWarnings(lines){
+ if(!lines.length){warnings.classList.add('hidden');warnings.innerHTML='';return;}
+ warnings.classList.remove('hidden');
+ warnings.innerHTML='<strong>Badge preparation notes</strong><ul>'+lines.slice(0,30).map(line=>'<li>'+esc(line)+'</li>').join('')+(lines.length>30?'<li>And '+(lines.length-30)+' further notes.</li>':'')+'</ul>';
+}
+function blocked(error){
+ status.textContent='Unable to prepare badges.';
+ msg.textContent=error.message||String(error)||'Unable to load badges.';
+ msg.classList.remove('hidden');
+ printButton.disabled=true;
+ document.body.dataset.printReady='false';
+}
 loadButton.addEventListener('click',async()=>{
- msg.classList.add('hidden');printButton.disabled=true;loadButton.disabled=true;document.body.dataset.printReady='false';badges.innerHTML='';status.textContent='Loading badges…';sessionStorage.adminPin=pin.value;
+ msg.classList.add('hidden');showWarnings([]);
+ printButton.disabled=true;loadButton.disabled=true;
+ document.body.dataset.printReady='false';badges.innerHTML='';
+ status.textContent='Loading delegate records…';
+ const adminPin=pin.value.trim();
+ if(!adminPin){blocked(new Error('Enter the Admin PIN first, then click Load badges.'));loadButton.disabled=false;return;}
+ sessionStorage.adminPin=adminPin;
  try{
-  const response=await fetch('/api/delegates?pin='+encodeURIComponent(pin.value)),data=await response.json();
-  if(!response.ok)throw new Error(data.error||'Unable to load badges.');
-  if(!Array.isArray(data.delegates))throw new Error('Unable to read the delegate list.');
-  if(!data.delegates.length){status.textContent='No delegates to print.';return;}
-  if(data.delegates.some(x=>!x.fullName||!x.badgeId||!x.badgeQrUrl))throw new Error('A delegate is missing a name, Badge ID or QR code. Please update the registration before printing.');
-  badges.innerHTML=renderPages(data.delegates);
-  await Promise.all([...badges.querySelectorAll('img')].map(imageReady));if(document.fonts)await document.fonts.ready;
-  const lowPhoto=[...badges.querySelectorAll('.photo')].find(img=>Math.min(img.naturalWidth,img.naturalHeight)<480);
-  if(lowPhoto)throw new Error('A delegate headshot is below the recommended 480 px minimum for sharp badge printing. Replace that headshot with a higher-resolution image.');
-  const lowQR=[...badges.querySelectorAll('img.qr')].find(img=>Math.min(img.naturalWidth,img.naturalHeight)<450);
-  if(lowQR)throw new Error('A delegate QR image is too small for reliable printing. Regenerate the QR image without changing its encoded value.');
-  if(!fitBadgeText())throw new Error('Some badge text does not fit. Please check the delegate details before printing.');
+  const response=await fetch('/api/delegates?pin='+encodeURIComponent(adminPin));
+  const data=await response.json();
+  if(!response.ok)throw new Error(data.error||'Unable to load badges. Check your Admin PIN.');
+  if(!Array.isArray(data.delegates))throw new Error('The server did not return a usable delegate list.');
+  const notes=[],skipped=[];
+  const active=data.delegates.filter(x=>{
+   if(String(x.registrationStatus||'').toLowerCase()==='cancelled'){skipped.push(x);return false;}
+   return true;
+  });
+  if(!active.length){status.textContent='No active delegates available to print.';return;}
+  let candidates=active.filter(x=>{
+   const hasFields=x.fullName&&x.badgeId&&x.badgeQrUrl&&x.headshotUrl;
+   if(!hasFields){notes.push('Skipped '+(x.fullName||x.badgeId||'Unnamed delegate')+': missing required badge details.');}
+   return !!hasFields;
+  });
+  if(!candidates.length)throw new Error('None of the delegates have the required name, photograph and QR information.');
+  status.textContent='Checking '+candidates.length+' delegate photos and QR codes…';
+  badges.innerHTML=renderPages(candidates);
+  const pairs=[...badges.querySelectorAll('.badge-pair')];
+  const checks=await Promise.all(pairs.map(async(pair,index)=>{
+   const imgs=[...pair.querySelectorAll('img')];
+   const results=await Promise.all(imgs.map(async(img)=>{
+    try{await imageReady(img);return {ok:true,img};}
+    catch(error){return {ok:false,img,error};}
+   }));
+   return {index,results};
+  }));
+  const good=[];
+  for(const result of checks){
+   const delegate=candidates[result.index],name=delegate.fullName;
+   const failures=result.results.filter(item=>!item.ok);
+   const artFailures=failures.filter(item=>item.img.classList.contains('badge-art')||item.img.classList.contains('back-logo'));
+   if(artFailures.length)throw new Error('Shared badge artwork could not load. Please check the uploaded badge assets and redeploy before printing.');
+   if(failures.length){
+    const problems=[...new Set(failures.map(item=>item.img.classList.contains('qr')?'QR code':item.img.classList.contains('photo')?'headshot':'badge image'))].join(' and ');
+    notes.push('Skipped '+name+': '+problems+' could not load. Check the delegate record and try again.');
+    continue;
+   }
+   const photo=result.results.find(item=>item.img.classList.contains('photo'))?.img;
+   if(photo&&Math.min(photo.naturalWidth,photo.naturalHeight)<480){
+    notes.push('Low-resolution photo for '+name+' ('+photo.naturalWidth+' × '+photo.naturalHeight+' px). Printing is allowed, but a higher-resolution photo is recommended.');
+   }
+   const qr=result.results.find(item=>item.img.classList.contains('qr'))?.img;
+   if(!qr||Math.min(qr.naturalWidth,qr.naturalHeight)<180){
+    notes.push('Skipped '+name+': QR image is too small for dependable scanning.');
+    continue;
+   }
+   if(Math.min(qr.naturalWidth,qr.naturalHeight)<450){
+    notes.push('QR image for '+name+' is below 450 px. Verify it scans after printing.');
+   }
+   good.push(delegate);
+  }
+  if(skipped.length)notes.unshift('Excluded '+skipped.length+' cancelled registration'+(skipped.length===1?'':'s')+'.');
+  if(!good.length){showWarnings(notes);throw new Error('No printable badges were found. See the preparation notes for the affected delegates.');}
+  // Re-render in two-badge groups after removing individual records with broken images.
+  if(good.length!==candidates.length){
+   badges.innerHTML=renderPages(good);
+   await Promise.all([...badges.querySelectorAll('img')].map(imageReady));
+  }
+  if(document.fonts)await document.fonts.ready;
+  if(!fitBadgeText())throw new Error('Some badge text does not fit. Check very long names or organisations before printing.');
   document.body.dataset.printReady='true';printButton.disabled=false;
-  status.textContent=`${data.delegates.length} badge${data.delegates.length===1?'':'s'} on ${Math.ceil(data.delegates.length/2)} A4 sheet${data.delegates.length>2?'s':''}, ready to print.`;
- }catch(error){status.textContent='';msg.textContent=error.message||'Unable to load badges.';msg.classList.remove('hidden');}
+  printButton.title='Print '+good.length+' prepared delegate badge'+(good.length===1?'':'s');
+  status.textContent=good.length+' badge'+(good.length===1?'':'s')+' prepared on '+Math.ceil(good.length/2)+' A4 sheet'+(good.length>2?'s':'')+'. Print badges is ready.';
+  showWarnings(notes);
+ }catch(error){blocked(error);}
  finally{loadButton.disabled=false;}
 });
+// When arriving from the logged-in Admin page, automatically prepare the badges.
+// Without a saved PIN, tell staff what to do rather than leaving an unexplained grey button.
+if(pin.value.trim())loadButton.click();
+pin.addEventListener('keydown',event=>{if(event.key==='Enter')loadButton.click();});
 printButton.addEventListener('click',()=>{if(document.body.dataset.printReady==='true'&&fitBadgeText())window.print();});
 window.addEventListener('beforeprint',()=>{if(document.body.dataset.printReady==='true'&&!fitBadgeText())document.body.dataset.printReady='false';});
 </script>
