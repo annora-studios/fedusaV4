@@ -1,0 +1,29 @@
+FEDUSA WEB SCANNER – APPAREL COLLECTION UPDATE
+Audited 13 October 2026
+
+ONE DELEGATE QR CODE
+The existing registration-generated badge QR code is used for CONGRESS,
+VOTING and APPAREL. Do not issue or print a separate apparel QR code.
+
+WEB SCANNER FLOW
+1. Log in as staff at /checkin.html and select Apparel Collection.
+2. Scan the existing badge QR (or enter the badge ID).
+3. Check the delegate name and the registered shirt/jacket size.
+4. Hand over the correct apparel and tap CONFIRM APPAREL HANDED OVER.
+5. The system writes apparelCollectedAt and apparelCollectedBy, separately
+   from checkedInAt and votingCheckedInAt.
+6. A repeat scan warns that apparel is already collected. Cancelled
+   registrations cannot check in or collect apparel.
+
+ADMIN AND BADGE CHANGES
+Admin list / Excel export show apparel collection timestamps.
+NOB badge and web scanner result label show NOB only.
+The badges retain a single existing QR code per delegate.
+Badge print checks image resolution before enabling printing.
+
+IMPORTANT
+Only the WEB scanner was updated and tested. The legacy android-scanner/
+folder was retained unchanged but is not part of this release.
+Not deployed: test real camera, real delegate data, live authentication,
+Netlify writes and print output before releasing for event use.
+See WEB-SCANNER-BADGE-QA-REPORT.md for tests and limitations.

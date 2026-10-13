@@ -21,7 +21,7 @@ The live portal has not been deployed from this workspace.
 
 DETAILS
 Uses the supplied Affiliate Badge Template artwork.
-Retains Affiliate and NOB / International delegate categories.
+Uses Affiliate and NOB categories; the NOB label is NOB only.
 Uses the existing delegate photo and existing single badge QR code.
 Prints the Badge ID on the front and back for pairing.
 Groups delegates in pairs; an odd final delegate uses the upper row.

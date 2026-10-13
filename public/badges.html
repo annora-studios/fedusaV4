@@ -16,6 +16,19 @@
 .type-bar{position:absolute;top:104mm;left:17mm;width:61mm;height:7mm;padding:.7mm 1.5mm;display:flex;align-items:center;justify-content:center;border-radius:2mm;text-align:center;font-size:3.7mm;font-weight:700;line-height:1.05;color:white;background:var(--badge-green)}.vip .type-bar{left:10mm;width:75mm;background:#a77810;font-size:3mm}
 .org{position:absolute;top:113mm;left:6mm;width:83mm;height:7mm;display:flex;align-items:center;justify-content:center;font-size:3.4mm;font-weight:700;line-height:1.05;text-align:center;text-transform:uppercase;overflow-wrap:anywhere}.org.long-org{font-size:2.9mm}.badge-id{position:absolute;top:121.4mm;left:5mm;width:85mm;height:3.2mm;font-size:2.6mm;line-height:1.1;text-align:center;color:#394553;overflow-wrap:anywhere}
 .back-logo{position:absolute;top:6mm;left:6.7mm;width:18mm;height:23mm;object-fit:contain;object-position:left top}.qr-surround{position:absolute;top:32mm;left:21.5mm;width:52mm;height:52mm;padding:2mm;background:white}.qr{display:block;width:48mm;height:48mm;object-fit:contain}.scan-copy{position:absolute;top:84.4mm;left:5mm;width:85mm;height:6mm;font-size:4.5mm;font-weight:800;text-align:center;color:#06183c}.back .badge-id{top:91.2mm}.badge-note{position:absolute;top:96mm;left:7mm;width:81mm;height:6mm;margin:0;font-size:2.7mm;line-height:1.1;text-align:center}.print-not-ready{display:none}
+/* NOB front: measured directly from supplied 95 x 145 mm NOB BADGES.pdf.
+   Affiliate artwork and layout remain unchanged. */
+.nob .front-header{top:0;height:32.8mm}
+.nob .front-footer{top:126.8mm;height:18.2mm}
+.nob .portrait{box-sizing:border-box;top:38.5mm;left:25.4mm;width:44.2mm;height:44.2mm;padding:0;border:1.65mm solid #003c68;background:#fff}
+.nob .photo{width:100%;height:100%;object-fit:cover;object-position:center}
+.nob .badge-name{top:85.8mm;left:6mm;width:83mm;height:15.5mm;font-size:6.8mm;font-weight:400;line-height:1.05;text-transform:none}
+.nob .badge-name.long-name{font-size:5.6mm}
+.nob .badge-name.very-long-name{font-size:4.5mm}
+.nob .type-bar{box-sizing:border-box;top:103.0mm;left:27.6mm;width:39.8mm;height:6.8mm;padding:0 1mm;border-radius:3.5mm;font-size:4.0mm;font-weight:700;background:#003c68}
+.nob .org{top:111.6mm;left:6mm;width:83mm;height:5.6mm;font-size:3.4mm;font-weight:500}
+.nob .org.long-org{font-size:2.9mm}
+.nob.front .badge-id{display:none}
 @media screen and (max-width:800px){.badge-page{width:max-content;box-shadow:none}.badge-pair{flex-direction:column;align-items:center;height:auto}.badge-wrap+.badge-wrap{margin:12px 0}.badge-pair+.badge-pair{margin-top:18px}.badge-controls{margin:16px}.badge-sheet{padding:10px 0;overflow-x:auto}.badge{box-shadow:0 5px 22px #001b3d24}}
 @page{size:A4 portrait;margin:3mm 10mm}
 @media print{
@@ -41,23 +54,23 @@ pin.value=sessionStorage.adminPin||'';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function front(x){
  const affiliate=x.registrationType==='affiliate',fullName=String(x.fullName||'').trim(),names=fullName.split(/\s+/),first=names.shift()||'',surname=names.join(' ');
- const organisation=String(affiliate?(x.affiliate||'FEDUSA'):(x.jobTitle||x.affiliate||'FEDUSA'));
+ const organisation=String(affiliate?(x.affiliate||'FEDUSA'):(x.organisation||x.organization||x.company||x.union||x.jobTitle||'FEDUSA'));
  const nameClass=fullName.length>48?'very-long-name':fullName.length>30?'long-name':'';
- return `<div class="badge-wrap"><article class="badge ${affiliate?'affiliate':'vip'}" aria-label="${esc(fullName)} - front">
- <img class="badge-art front-header" src="/assets/badges/front-header.png" alt="8th FEDUSA National Congress">
+ return `<div class="badge-wrap"><article class="badge ${affiliate?'affiliate':'nob front'}" aria-label="${esc(fullName)} - front">
+ <img class="badge-art front-header" src="${affiliate?'/assets/badges/front-header.png':'/assets/badges/nob-front-header.png'}" alt="8th FEDUSA National Congress">
  <div class="portrait"><img class="photo" src="${esc(x.headshotUrl)}" alt="${esc(fullName)}"></div>
  <h2 class="badge-name fit-text ${nameClass}"><span>${esc(first)}</span><span>${esc(surname)}</span></h2>
- <div class="type-bar fit-text">${affiliate?'AFFILIATE DELEGATE':'NOB / INTERNATIONAL DELEGATE'}</div>
+ <div class="type-bar fit-text">${affiliate?'AFFILIATE DELEGATE':'NOB'}</div>
  <div class="org fit-text ${organisation.length>38?'long-org':''}">${esc(organisation)}</div>
  <div class="badge-id fit-text">BADGE ID: ${esc(x.badgeId)}</div>
- <img class="badge-art front-footer" src="/assets/badges/front-footer.png" alt="14 - 16 October 2026. Radisson Blu Hotel &amp; Convention Centre.">
+ <img class="badge-art front-footer" src="${affiliate?'/assets/badges/front-footer.png':'/assets/badges/nob-front-footer.png'}" alt="14 - 16 October 2026. Radisson Blu Hotel &amp; Convention Centre.">
  </article></div>`;
 }
 function back(x){return `<div class="badge-wrap"><article class="badge back" aria-label="${esc(x.fullName)} - back">
  <img class="back-logo" src="/assets/badges/back-logo.png" alt="FEDUSA">
- <div class="qr-surround"><img class="qr" src="${esc(x.badgeQrUrl)}" alt="Delegate check-in QR code"></div>
- <div class="scan-copy">Scan for check-in</div><div class="badge-id fit-text">BADGE ID: ${esc(x.badgeId)}</div>
- <p class="badge-note">One QR code for congress and authorised voting<br>workflows</p>
+ <div class="qr-surround"><img class="qr" src="${esc(x.badgeQrUrl)}" alt="Delegate QR code for congress, voting and apparel"></div>
+ <div class="scan-copy">Scan delegate QR code</div><div class="badge-id fit-text">BADGE ID: ${esc(x.badgeId)}</div>
+ <p class="badge-note">One QR code for congress, voting<br>and apparel collection</p>
  <img class="badge-art back-footer" src="/assets/badges/back-footer.png" alt="14 - 16 October 2026. Radisson Blu Hotel &amp; Convention Centre, Johannesburg, O.R Tambo Airport. Emergency contact: 062 454 3261.">
  </article></div>`;}
 function renderPages(delegates){
@@ -96,6 +109,10 @@ loadButton.addEventListener('click',async()=>{
   if(data.delegates.some(x=>!x.fullName||!x.badgeId||!x.badgeQrUrl))throw new Error('A delegate is missing a name, Badge ID or QR code. Please update the registration before printing.');
   badges.innerHTML=renderPages(data.delegates);
   await Promise.all([...badges.querySelectorAll('img')].map(imageReady));if(document.fonts)await document.fonts.ready;
+  const lowPhoto=[...badges.querySelectorAll('.photo')].find(img=>Math.min(img.naturalWidth,img.naturalHeight)<480);
+  if(lowPhoto)throw new Error('A delegate headshot is below the recommended 480 px minimum for sharp badge printing. Replace that headshot with a higher-resolution image.');
+  const lowQR=[...badges.querySelectorAll('img.qr')].find(img=>Math.min(img.naturalWidth,img.naturalHeight)<450);
+  if(lowQR)throw new Error('A delegate QR image is too small for reliable printing. Regenerate the QR image without changing its encoded value.');
   if(!fitBadgeText())throw new Error('Some badge text does not fit. Please check the delegate details before printing.');
   document.body.dataset.printReady='true';printButton.disabled=false;
   status.textContent=`${data.delegates.length} badge${data.delegates.length===1?'':'s'} on ${Math.ceil(data.delegates.length/2)} A4 sheet${data.delegates.length>2?'s':''}, ready to print.`;
