@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>8th FEDUSA National Congress | Registrations Closed</title>
+  <title>FEDUSA Conference Registration</title>
   <link rel="stylesheet" href="/styles.css">
 </head>
-<body data-registrations-closed="true">
+<body>
 <header class="topbar">
 <div class="brand">
     <div class="logo-mark">
@@ -14,10 +14,10 @@
     </div>
     <div>
         <strong>FEDUSA</strong>
-        <span>8th National Congress</span>
+        <span>Conference Registration</span>
     </div>
 </div>
-<div class="topbar-actions"><label class="language-picker" aria-label="Language"><span>🌐</span><select id="languageSelect"></select></label><div class="secure-label">Congress 2026</div></div>
+<div class="topbar-actions"><label class="language-picker" aria-label="Language"><span>🌐</span><select id="languageSelect"></select></label><div class="secure-label">🛡️Secure registration</div></div>
 </header>
 
 <section class="hero-section" id="conferenceHero">
@@ -32,11 +32,10 @@
       <span><b>Venue</b> Radisson Blu OR Tambo Convention Centre</span>
       <span><b>City</b> Johannesburg, South Africa</span>
     </div>
-    <p>Registration for the 8th FEDUSA National Congress has closed. We look forward to welcoming confirmed delegates.</p>
+    <p>Connect, participate and help shape the future. Choose the correct registration path to secure your place at the conference.</p>
     <div class="hero-actions">
-      <span class="hero-closed-status" aria-label="Online registrations closed">Registrations closed</span>
-      <a class="hero-primary" href="/retrieve.html">Manage existing registration</a>
-      <a class="hero-secondary" href="#keynote-speakers">Meet the speakers</a>
+      <a class="hero-primary" href="#registration-start">Register now</a>
+      <a class="hero-secondary" href="#keynote-speakers">Meet the speakers</a><a class="hero-secondary" href="/retrieve.html">Manage existing registration</a>
     </div>
   </div>
   <div class="countdown-panel" aria-label="Conference countdown">
@@ -74,22 +73,21 @@
 </section>
 
 <main class="page-wrap">
-  <section class="registration-closed-section" id="registration-start" aria-labelledby="closedTitle">
-    <div class="registration-closed-card">
-      <div class="closed-label"><span class="closed-dot" aria-hidden="true"></span> REGISTRATIONS CLOSED</div>
-      <h2 id="closedTitle">Online registration is now closed</h2>
-      <p>Thank you for your interest in the 8th FEDUSA National Congress. New delegate registrations are no longer being accepted.</p>
-      <div class="closed-help">
-        <div>
-          <h3>Already registered?</h3>
-          <p>Confirmed delegates can request their secure management link to review or update existing registration information.</p>
-        </div>
-        <a class="primary-btn" href="/retrieve.html">Manage existing registration →</a>
-      </div>
+  <section class="path-intro" id="registration-start">
+    <span class="eyebrow">CHOOSE A REGISTRATION PATH</span>
+    <h2>How are you attending?</h2>
+    <p>To ensure you complete the correct registration form, please indicate whether you are registering as an Affiliate or as a Main Delegate.</p>
+    <div class="path-buttons">
+      <button class="path-card main-path" data-path="main" type="button">
+        <span class="path-icon">V</span><span><strong>NOB / International Delegate</strong><small>This registration is for FEDUSA National Office Bearers (NOBs) and national and international guest speakers. Please complete this form to provide your accommodation and travel information, as well as voting details where applicable.</small></span><b>Start individual registration →</b>
+      </button>
+		 <button class="path-card affiliate-path" data-path="affiliate" type="button">
+        <span class="path-icon">A</span><span><strong>Affiliate Attendees</strong><small>This registration is for the designated logistics representative of a FEDUSA affiliate. Use this form to register the affiliate and add each attending delegate, including their individual voting status.</small></span><b>Start affiliate registration →</b>
+      </button>
     </div>
   </section>
 
-  <section id="formShell" class="form-shell hidden" hidden aria-hidden="true">
+  <section id="formShell" class="form-shell hidden">
     <aside class="steps" id="stepsPanel"></aside>
     <form id="registrationForm" class="main-card" novalidate></form>
     <aside class="summary-card">
