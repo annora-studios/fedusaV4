@@ -1,0 +1,36 @@
+FEDUSA BADGE PRINT UPDATE - 13 OCTOBER 2026
+
+PRINT LAYOUT
+A4 portrait (210 x 297 mm).
+Two delegates per sheet, with one front/back strip per row.
+Each panel is 95 x 145 mm.
+Each complete strip is 190 x 145 mm; front left, back right.
+There is no gap between a front and its matching back.
+Fold each joined strip down its centre to fit a 95 x 145 mm pouch.
+There is a 1 mm cutting gap between the two rows.
+Margins: 3 mm top/bottom, 10 mm left/right.
+Print at 100% / Actual size. Disable browser headers and footers.
+Enable background graphics. The printer must support 3 mm top/bottom margins.
+Keep each complete strip joined when cutting, then fold at the centre.
+
+INSTALLING THIS UPDATE
+This package is based on the saved FEDUSA v5.5 project.
+Update only public/badges.html and the public/assets/badges/ folder
+in the existing project, then deploy through the existing Netlify setup.
+The live portal has not been deployed from this workspace.
+
+DETAILS
+Uses the supplied Affiliate Badge Template artwork.
+Retains Affiliate and NOB / International delegate categories.
+Uses the existing delegate photo and existing single badge QR code.
+Prints the Badge ID on the front and back for pairing.
+Groups delegates in pairs; an odd final delegate uses the upper row.
+Waits for badge images before enabling Print.
+Registration data, QR payloads, scanner endpoints and apparel collection
+logic are unchanged.
+
+VALIDATION
+The rendered A4 print layout was measured at exactly 95 x 145 mm
+per panel, with matching front/back pairs and an odd delegate count.
+The sample PDF uses SAMPLE Badge IDs and non-live QR codes.
+Browser and physical-printer output have not been checked.

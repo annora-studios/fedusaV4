@@ -1,13 +1,109 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>FEDUSA Badge Printing</title><link rel="stylesheet" href="/styles.css">
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FEDUSA Badge Printing</title>
+<link rel="stylesheet" href="/styles.css">
 <style>
-:root{--navy:#031d4a;--green:#079448;--gold:#b9881a}.badge-controls{max-width:1100px;margin:24px auto;background:#fff;border-radius:14px;padding:18px;box-shadow:0 8px 24px #11223a17}.badge-controls .row{display:flex;gap:12px;align-items:end;flex-wrap:wrap}.badge-controls label{font-weight:800;flex:1;min-width:220px}.badge-controls input{display:block;width:100%;padding:12px;border:1px solid #cad4e2;border-radius:9px;margin-top:5px}.badge-sheet{display:grid;grid-template-columns:repeat(2,86mm);justify-content:center;gap:12mm 10mm;padding:10mm}.badge-pair{display:grid;grid-template-columns:1fr 1fr;gap:6mm;grid-column:1/-1;justify-content:center}.badge{width:86mm;height:130mm;background:#fff;border-radius:4mm;overflow:hidden;position:relative;box-shadow:0 8px 25px #001b3d25;border:1px solid #d8e0ea;break-inside:avoid;display:flex;flex-direction:column;color:#06183c}.badge-header{height:31mm;background:linear-gradient(120deg,var(--navy) 0 67%,#fff 67% 73%,var(--green) 73% 86%,#d9a226 86%);padding:7mm 6mm;display:flex;align-items:center}.badge-header img{width:45mm;height:19mm;object-fit:contain;object-position:left center;filter:brightness(0) invert(1)}.badge-main{flex:1;padding:5mm 6mm;text-align:center;display:flex;flex-direction:column;align-items:center}.photo{width:30mm;height:30mm;border-radius:50%;object-fit:cover;border:1.2mm solid #fff;outline:.4mm solid var(--green);background:#edf1f5}.badge h2{font-size:7mm;line-height:.92;margin:3mm 0 1mm;text-transform:uppercase}.type-bar{padding:1.2mm 5mm;border-radius:2mm;color:#fff;font-size:3.5mm;font-weight:900;margin:1mm 0}.vip .type-bar{background:linear-gradient(90deg,#a77810,#c7982b)}.affiliate .type-bar{background:linear-gradient(90deg,#07813c,#11a653)}.org{font-weight:900;font-size:3.7mm;margin-top:1mm}.badge-id-label{font-size:2.8mm;color:var(--green);font-weight:900;margin-top:2.5mm}.badge-id{font-size:5mm;font-weight:900}.event-footer{background:var(--navy);color:#fff;padding:4mm 6mm;font-size:3mm;line-height:1.5;text-align:left}.event-footer div{display:flex;gap:3mm;align-items:center}.emergency{background:var(--green);color:#fff;padding:3mm 6mm;font-weight:900;font-size:3.5mm;display:flex;align-items:center;gap:3mm}.badge.back .badge-header{height:27mm;background:#fff;padding:6mm}.badge.back .badge-header img{filter:none;width:50mm;margin:auto}.badge.back .badge-main{justify-content:center}.badge.back .qr{width:43mm;height:43mm;object-fit:contain}.scan-copy{font-size:4mm;font-weight:900;margin-top:3mm}.badge-note{font-size:2.8mm;color:#68758a;margin-top:2mm}.side-label{text-align:center;font-size:3mm;font-weight:900;color:#506078;margin-bottom:2mm}.badge-wrap{display:flex;flex-direction:column;align-items:center}.hidden{display:none!important}@media(max-width:900px){.badge-sheet{display:flex;flex-direction:column;align-items:center;padding:15px}.badge-pair{display:flex;flex-direction:column}}@page{size:A4 portrait;margin:8mm}@media print{body{background:#fff}.topbar,.badge-controls{display:none!important}.badge-sheet{display:block;padding:0}.badge-pair{display:grid;grid-template-columns:86mm 86mm;gap:10mm;page-break-after:always;margin:0 auto 8mm;justify-content:center}.badge{box-shadow:none}.side-label{display:none}}
-</style></head><body>
-<header class="topbar"><div class="brand"><div class="logo-mark"><img src="/assets/Fedusalogo.svg" alt="FEDUSA"></div><div><strong>FEDUSA</strong><span>Congress 2026 Badge Printing</span></div></div><a href="/admin.html" style="color:#fff">Admin</a></header>
-<section class="badge-controls"><div class="row"><label>Admin PIN<input id="pin" type="password"></label><button class="primary-btn" id="load">Load badges</button><button class="outline-btn" onclick="print()">Print front & back</button></div><div id="msg" class="error hidden"></div></section><main id="badges" class="badge-sheet"></main>
+:root{--badge-width:95mm;--badge-height:145mm;--badge-navy:#0c3b60;--badge-green:#00833e}
+.badge-controls{max-width:1100px;margin:24px auto;padding:20px;background:white;border-radius:14px;box-shadow:0 8px 24px #11223a17}
+.badge-controls .row{display:flex;gap:12px;align-items:end;flex-wrap:wrap}.badge-controls label{flex:1;min-width:220px}.badge-controls input{display:block;width:100%}.print-help{margin:16px 0 0;font-size:14px;line-height:1.5;color:#536275}button:disabled{opacity:.5;cursor:not-allowed}
+.badge-sheet{padding:20px}.badge-page{margin:0 auto 28px;width:190mm;background:white;box-shadow:0 5px 22px #001b3d24}.badge-pair{display:flex;justify-content:center;height:145mm}.badge-pair+.badge-pair{margin-top:1mm}.badge-wrap{width:95mm;height:145mm;flex:none}.badge-wrap+.badge-wrap{margin-left:0}
+.badge{position:relative;box-sizing:border-box;width:95mm;height:145mm;flex:none;overflow:hidden;background:white;color:#111;font-family:Arial,Helvetica,sans-serif}.badge-art{position:absolute;left:0;width:95mm;display:block}.front-header{top:0;height:32.5mm}.front-footer{top:125.8mm;height:19.2mm}.back-footer{top:102.5mm;height:42.5mm}
+.portrait{position:absolute;top:39mm;left:25.5mm;width:44mm;height:44mm;padding:1.3mm;border:.2mm solid var(--badge-green);border-radius:50%;background:white}.photo{display:block;width:100%;height:100%;object-fit:cover;object-position:center;border-radius:50%;background:#edf1f5}
+.badge-name{position:absolute;top:86mm;left:6mm;width:83mm;height:17mm;margin:0;display:flex;flex-direction:column;justify-content:center;text-align:center;text-transform:uppercase;font-size:6.7mm;font-weight:600;line-height:1.04;overflow-wrap:anywhere}.badge-name span{display:block}.badge-name.long-name{font-size:5.2mm}.badge-name.very-long-name{font-size:4.2mm}
+.type-bar{position:absolute;top:104mm;left:17mm;width:61mm;height:7mm;padding:.7mm 1.5mm;display:flex;align-items:center;justify-content:center;border-radius:2mm;text-align:center;font-size:3.7mm;font-weight:700;line-height:1.05;color:white;background:var(--badge-green)}.vip .type-bar{left:10mm;width:75mm;background:#a77810;font-size:3mm}
+.org{position:absolute;top:113mm;left:6mm;width:83mm;height:7mm;display:flex;align-items:center;justify-content:center;font-size:3.4mm;font-weight:700;line-height:1.05;text-align:center;text-transform:uppercase;overflow-wrap:anywhere}.org.long-org{font-size:2.9mm}.badge-id{position:absolute;top:121.4mm;left:5mm;width:85mm;height:3.2mm;font-size:2.6mm;line-height:1.1;text-align:center;color:#394553;overflow-wrap:anywhere}
+.back-logo{position:absolute;top:6mm;left:6.7mm;width:18mm;height:23mm;object-fit:contain;object-position:left top}.qr-surround{position:absolute;top:32mm;left:21.5mm;width:52mm;height:52mm;padding:2mm;background:white}.qr{display:block;width:48mm;height:48mm;object-fit:contain}.scan-copy{position:absolute;top:84.4mm;left:5mm;width:85mm;height:6mm;font-size:4.5mm;font-weight:800;text-align:center;color:#06183c}.back .badge-id{top:91.2mm}.badge-note{position:absolute;top:96mm;left:7mm;width:81mm;height:6mm;margin:0;font-size:2.7mm;line-height:1.1;text-align:center}.print-not-ready{display:none}
+@media screen and (max-width:800px){.badge-page{width:max-content;box-shadow:none}.badge-pair{flex-direction:column;align-items:center;height:auto}.badge-wrap+.badge-wrap{margin:12px 0}.badge-pair+.badge-pair{margin-top:18px}.badge-controls{margin:16px}.badge-sheet{padding:10px 0;overflow-x:auto}.badge{box-shadow:0 5px 22px #001b3d24}}
+@page{size:A4 portrait;margin:3mm 10mm}
+@media print{
+html,body{margin:0;padding:0;background:white}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}.topbar,.badge-controls{display:none!important}.badge-sheet{padding:0;margin:0}
+.badge-page{width:190mm;height:291mm;margin:0;padding:0;box-shadow:none;break-inside:avoid;break-after:page;page-break-after:always}.badge-page:last-child{break-after:auto;page-break-after:auto}
+.badge-pair{display:flex;flex-direction:row;width:190mm;height:145mm;margin:0;break-inside:avoid}.badge-pair+.badge-pair{margin-top:1mm}.badge-wrap{width:95mm;height:145mm;margin:0}.badge-wrap+.badge-wrap{margin:0}
+body:not([data-print-ready="true"]) .badge-sheet{display:none}body:not([data-print-ready="true"]) .print-not-ready{display:block}
+}
+</style>
+</head>
+<body data-print-ready="false">
+<header class="topbar"><div class="brand"><div class="logo-mark"><img src="/assets/Fedusalogo.svg" alt="FEDUSA"></div><div><strong>FEDUSA</strong><span>Congress 2026 Badge Printing</span></div></div><a href="/admin.html" style="color:white">Admin</a></header>
+<section class="badge-controls">
+<div class="row"><label for="pin">Admin PIN<input id="pin" type="password" autocomplete="current-password"></label><button class="primary-btn" id="load">Load badges</button><button class="outline-btn" id="print-badges" disabled>Print badges</button></div>
+<p class="print-help"><strong>Two complete badges per A4 sheet.</strong> Each row is one <strong>190 × 145 mm strip</strong>: front on the left, back on the right, with <strong>no gap</strong> between them. Cut around each complete strip, then fold down its centre to make a <strong>95 × 145 mm badge</strong>. Print at <strong>100% / Actual size</strong>, with headers and footers off and background graphics on. The layout uses 3 mm top/bottom margins, 10 mm side margins and a 1 mm gap between the two strips.</p>
+<p id="status" role="status" aria-live="polite"></p><div id="msg" class="error hidden" role="alert"></div>
+</section>
+<p class="print-not-ready">Badges are not ready to print. Load the badges and wait for all photographs and QR codes to finish loading.</p>
+<main id="badges" class="badge-sheet"></main>
 <script>
-const pin=document.querySelector('#pin'),badges=document.querySelector('#badges'),msg=document.querySelector('#msg');pin.value=sessionStorage.adminPin||'';
-const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function front(x){const aff=x.registrationType==='affiliate',name=String(x.fullName||'').trim().split(/\s+/),first=name.shift()||'',last=name.join(' ');return `<div class="badge-wrap"><div class="side-label">FRONT</div><article class="badge ${aff?'affiliate':'vip'}"><div class="badge-header"><img src="/assets/Fedusalogo.svg" alt="FEDUSA Congress 2026"></div><div class="badge-main"><img class="photo" src="${x.headshotUrl}" alt="${esc(x.fullName)}" onerror="this.onerror=null;this.removeAttribute('src');this.alt='Headshot unavailable'"><h2>${esc(first)}<br>${esc(last)}</h2><div class="type-bar">${aff?'AFFILIATE DELEGATE':'NOB / INTERNATIONAL DELEGATE'}</div><div class="org">${aff?'AFFILIATE: '+esc(x.affiliate||'FEDUSA'):esc(x.jobTitle||x.affiliate||'FEDUSA')}</div><div class="badge-id-label">BADGE ID</div><div class="badge-id">${esc(x.badgeId)}</div></div><div class="event-footer"><div>▣ <b>14 – 16 OCTOBER 2026</b></div><div>⌖ RADISSON BLU OR TAMBO CONVENTION CENTRE</div><div>&nbsp;&nbsp;&nbsp;JOHANNESBURG, SOUTH AFRICA</div></div><div class="emergency">☎ <span>EMERGENCY CONTACT<br>062 454 3261</span></div></article></div>`}
-function back(x){return `<div class="badge-wrap"><div class="side-label">BACK</div><article class="badge back"><div class="badge-header"><img src="/assets/Fedusalogo.svg" alt="FEDUSA Congress 2026"></div><div class="badge-main"><img class="qr" src="${x.badgeQrUrl}" alt="Check-in QR" onerror="this.onerror=null;this.removeAttribute('src');this.alt='QR code unavailable'"><div class="scan-copy">Scan for check-in</div><div class="badge-note">One QR code for congress and authorised voting workflows</div></div><div class="event-footer"><div>▣ <b>14 – 16 OCTOBER 2026</b></div><div>⌖ RADISSON BLU OR TAMBO CONVENTION CENTRE</div><div>&nbsp;&nbsp;&nbsp;JOHANNESBURG, SOUTH AFRICA</div></div><div class="emergency">☎ <span>EMERGENCY CONTACT<br>062 454 3261</span></div></article></div>`}
-document.querySelector('#load').onclick=async()=>{msg.classList.add('hidden');sessionStorage.adminPin=pin.value;const r=await fetch('/api/delegates?pin='+encodeURIComponent(pin.value)),d=await r.json();if(!r.ok){msg.textContent=d.error||'Unable to load badges';msg.classList.remove('hidden');return}badges.innerHTML=d.delegates.map(x=>`<section class="badge-pair">${front(x)}${back(x)}</section>`).join('')};
-</script></body></html>
+const pin=document.querySelector('#pin'),badges=document.querySelector('#badges'),msg=document.querySelector('#msg'),printButton=document.querySelector('#print-badges'),loadButton=document.querySelector('#load'),status=document.querySelector('#status');
+pin.value=sessionStorage.adminPin||'';
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function front(x){
+ const affiliate=x.registrationType==='affiliate',fullName=String(x.fullName||'').trim(),names=fullName.split(/\s+/),first=names.shift()||'',surname=names.join(' ');
+ const organisation=String(affiliate?(x.affiliate||'FEDUSA'):(x.jobTitle||x.affiliate||'FEDUSA'));
+ const nameClass=fullName.length>48?'very-long-name':fullName.length>30?'long-name':'';
+ return `<div class="badge-wrap"><article class="badge ${affiliate?'affiliate':'vip'}" aria-label="${esc(fullName)} - front">
+ <img class="badge-art front-header" src="/assets/badges/front-header.png" alt="8th FEDUSA National Congress">
+ <div class="portrait"><img class="photo" src="${esc(x.headshotUrl)}" alt="${esc(fullName)}"></div>
+ <h2 class="badge-name fit-text ${nameClass}"><span>${esc(first)}</span><span>${esc(surname)}</span></h2>
+ <div class="type-bar fit-text">${affiliate?'AFFILIATE DELEGATE':'NOB / INTERNATIONAL DELEGATE'}</div>
+ <div class="org fit-text ${organisation.length>38?'long-org':''}">${esc(organisation)}</div>
+ <div class="badge-id fit-text">BADGE ID: ${esc(x.badgeId)}</div>
+ <img class="badge-art front-footer" src="/assets/badges/front-footer.png" alt="14 - 16 October 2026. Radisson Blu Hotel &amp; Convention Centre.">
+ </article></div>`;
+}
+function back(x){return `<div class="badge-wrap"><article class="badge back" aria-label="${esc(x.fullName)} - back">
+ <img class="back-logo" src="/assets/badges/back-logo.png" alt="FEDUSA">
+ <div class="qr-surround"><img class="qr" src="${esc(x.badgeQrUrl)}" alt="Delegate check-in QR code"></div>
+ <div class="scan-copy">Scan for check-in</div><div class="badge-id fit-text">BADGE ID: ${esc(x.badgeId)}</div>
+ <p class="badge-note">One QR code for congress and authorised voting<br>workflows</p>
+ <img class="badge-art back-footer" src="/assets/badges/back-footer.png" alt="14 - 16 October 2026. Radisson Blu Hotel &amp; Convention Centre, Johannesburg, O.R Tambo Airport. Emergency contact: 062 454 3261.">
+ </article></div>`;}
+function renderPages(delegates){
+ const pages=[];
+ for(let i=0;i<delegates.length;i+=2){
+  const pairs=delegates.slice(i,i+2).map(x=>`<section class="badge-pair">${front(x)}${back(x)}</section>`).join('');
+  pages.push(`<section class="badge-page">${pairs}</section>`);
+ }
+ return pages.join('');
+}
+function fitBadgeText(){
+ let fits=true;
+ for(const element of badges.querySelectorAll('.fit-text')){
+  let size=parseFloat(getComputedStyle(element).fontSize);
+  while((element.scrollHeight>element.clientHeight+1||element.scrollWidth>element.clientWidth+1)&&size>8){size-=.25;element.style.fontSize=size+'px';}
+  if(element.scrollHeight>element.clientHeight+1||element.scrollWidth>element.clientWidth+1)fits=false;
+ }
+ return fits;
+}
+function imageReady(img){
+ if(!img.getAttribute('src'))return Promise.reject(new Error('A badge photograph or QR code is missing. Please update the delegate record and reload.'));
+ if(img.complete)return img.naturalWidth?Promise.resolve():Promise.reject(new Error('A badge image could not load. Please check the connection and reload.'));
+ return new Promise((resolve,reject)=>{
+  const timer=setTimeout(()=>reject(new Error('Badge images are still loading. Please check the connection and reload.')),30000);
+  img.addEventListener('load',()=>{clearTimeout(timer);resolve();},{once:true});
+  img.addEventListener('error',()=>{clearTimeout(timer);reject(new Error('A badge image could not load. Please check the connection and reload.'));},{once:true});
+ });
+}
+loadButton.addEventListener('click',async()=>{
+ msg.classList.add('hidden');printButton.disabled=true;loadButton.disabled=true;document.body.dataset.printReady='false';badges.innerHTML='';status.textContent='Loading badges…';sessionStorage.adminPin=pin.value;
+ try{
+  const response=await fetch('/api/delegates?pin='+encodeURIComponent(pin.value)),data=await response.json();
+  if(!response.ok)throw new Error(data.error||'Unable to load badges.');
+  if(!Array.isArray(data.delegates))throw new Error('Unable to read the delegate list.');
+  if(!data.delegates.length){status.textContent='No delegates to print.';return;}
+  if(data.delegates.some(x=>!x.fullName||!x.badgeId||!x.badgeQrUrl))throw new Error('A delegate is missing a name, Badge ID or QR code. Please update the registration before printing.');
+  badges.innerHTML=renderPages(data.delegates);
+  await Promise.all([...badges.querySelectorAll('img')].map(imageReady));if(document.fonts)await document.fonts.ready;
+  if(!fitBadgeText())throw new Error('Some badge text does not fit. Please check the delegate details before printing.');
+  document.body.dataset.printReady='true';printButton.disabled=false;
+  status.textContent=`${data.delegates.length} badge${data.delegates.length===1?'':'s'} on ${Math.ceil(data.delegates.length/2)} A4 sheet${data.delegates.length>2?'s':''}, ready to print.`;
+ }catch(error){status.textContent='';msg.textContent=error.message||'Unable to load badges.';msg.classList.remove('hidden');}
+ finally{loadButton.disabled=false;}
+});
+printButton.addEventListener('click',()=>{if(document.body.dataset.printReady==='true'&&fitBadgeText())window.print();});
+window.addEventListener('beforeprint',()=>{if(document.body.dataset.printReady==='true'&&!fitBadgeText())document.body.dataset.printReady='false';});
+</script>
+</body>
+</html>
