@@ -45,13 +45,16 @@ export function normalizeMobile(value=''){
 export function normalizeName(value=''){ return String(value).trim().toLowerCase().replace(/\s+/g,' '); }
 export function normalizeOrganisation(value=''){ return String(value).trim().toLowerCase().replace(/[^a-z0-9]+/g,''); }
 
-export async function readAllDelegates() {
+export async function readAllDelegates({concurrency=1}={}) {
   const store = recordsStore();
   const index = (await store.get("delegates-index", { type: "json" })) || [];
   const rows = [];
-  for (const key of index) {
-    const row = await store.get(key, { type: "json" });
-    if (row) rows.push(row);
+  // Export opts into bounded parallel reads; other callers retain their behaviour.
+  const batchSize = Math.max(1, Math.min(20, Math.floor(Number(concurrency)) || 1));
+  for (let i = 0; i < index.length; i += batchSize) {
+    const batch = await Promise.all(index.slice(i, i + batchSize)
+      .map(key => store.get(key, { type: "json" })));
+    rows.push(...batch.filter(Boolean));
   }
   return rows.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
 }
