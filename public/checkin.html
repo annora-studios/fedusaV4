@@ -17,7 +17,7 @@
 
 <section id="loginScreen" class="screen active"><div class="screen-pad"><span class="eyebrow">Staff access</span><h1>Scanner sign in</h1><p>Use your assigned staff account to access congress check-in, voting check-in and apparel collection.</p><div class="login-card"><label>Username</label><input id="username" autocomplete="username"><label>Password</label><input id="password" type="password" autocomplete="current-password"><button id="loginBtn" class="primary-app-btn">SIGN IN</button><div id="loginError" class="error-note hidden"></div></div></div></section>
 
-<section id="modeScreen" class="screen"><div class="screen-pad"><span class="eyebrow">14–16 October 2026</span><h1>Select Mode</h1><p>One badge QR code supports multiple authorised workflows.</p><div class="mode-stack"><button class="mode-choice congress" data-mode="congress"><span class="mode-icon">👥</span><span><strong>CONGRESS CHECK-IN</strong><small>Record delegate arrival</small></span></button><button class="mode-choice voting" data-mode="voting"><span class="mode-icon">🗳</span><span><strong>VOTING SESSION CHECK-IN</strong><small>Verify voting-member access</small></span></button><button class="mode-choice apparel" data-mode="apparel"><span class="mode-icon">👕</span><span><strong>APPAREL COLLECTION</strong><small>Record apparel issued to a delegate</small></span></button></div></div><div class="staff-strip"><span id="staffName">Staff member</span><span id="staffLocation"></span></div><footer class="app-bottom"><div class="bottom-item"><b>↶</b>History</div><div class="bottom-item"><b>⚙</b>Settings</div></footer></section>
+<section id="modeScreen" class="screen"><div class="screen-pad"><span class="eyebrow">14–16 October 2026</span><h1>Select Mode</h1><p>One badge QR code supports multiple authorised workflows.</p><div class="mode-stack"><button class="mode-choice congress" data-mode="congress"><span class="mode-icon">👥</span><span><strong>CONGRESS CHECK-IN</strong><small>One check-in per day (South African time)</small></span></button><button class="mode-choice voting" data-mode="voting"><span class="mode-icon">🗳</span><span><strong>VOTING SESSION CHECK-IN</strong><small>Verify voting-member access</small></span></button><button class="mode-choice apparel" data-mode="apparel"><span class="mode-icon">👕</span><span><strong>APPAREL COLLECTION</strong><small>Record apparel issued to a delegate</small></span></button></div></div><div class="staff-strip"><span id="staffName">Staff member</span><span id="staffLocation"></span></div><footer class="app-bottom"><div class="bottom-item"><b>↶</b>History</div><div class="bottom-item"><b>⚙</b>Settings</div></footer></section>
 
 <section id="scanScreen" class="screen"><div class="scanner-top"><button class="icon-btn" id="backBtn">←</button><strong id="scanTitle">CONGRESS CHECK-IN</strong><button class="icon-btn" id="retryCameraBtn" title="Retry camera">↻</button></div><div class="camera-stage"><div id="reader" class="camera-reader"></div><div class="scan-frame"><i></i><i></i><i></i><i></i><div class="scan-line"></div></div><div class="scan-hint" id="scanHint">Position QR code within the frame</div><div id="cameraError" class="camera-error hidden"></div></div><div class="manual-entry"><input id="code" placeholder="Scan QR or enter badge ID" autocomplete="off"><button id="scanBtn">SCAN</button></div></section>
 
@@ -87,12 +87,12 @@ async function scan(method='manual',action='lookup'){
   }catch(e){renderResult({status:'error',delegate:null,error:e.message})}
   finally{$('#scanBtn').disabled=false;$('#confirmApparelBtn').disabled=false}
 }
-function fmt(value){if(!value)return '—';try{return new Date(value).toLocaleString('en-ZA',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'short'})}catch{return value}}
+function fmt(value){if(!value)return '—';try{return new Date(value).toLocaleString('en-ZA',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'short',timeZone:'Africa/Johannesburg'})}catch{return value}}
 function renderResult(x){
   stopCameraScanner();const d=x.delegate||{};
-  let kind='success',symbol='✓',title=mode==='voting'?'VOTING DELEGATE VERIFIED':mode==='apparel'?'APPAREL COLLECTION RECORDED':'CONGRESS CHECK-IN SUCCESSFUL';
+  let kind='success',symbol='✓',title=mode==='voting'?'VOTING DELEGATE VERIFIED':mode==='apparel'?'APPAREL COLLECTION RECORDED':'CONGRESS CHECK-IN RECORDED TODAY';
   if(x.status==='ready'){kind='success';symbol='👕';title='READY FOR APPAREL COLLECTION'}
-  else if(x.status==='duplicate'){kind='duplicate';symbol='!';title=mode==='voting'?'VOTING CHECK-IN ALREADY RECORDED':mode==='apparel'?'APPAREL ALREADY COLLECTED':'CONGRESS CHECK-IN ALREADY RECORDED'}
+  else if(x.status==='duplicate'){kind='duplicate';symbol='!';title=mode==='voting'?'VOTING CHECK-IN ALREADY RECORDED':mode==='apparel'?'APPAREL ALREADY COLLECTED':'ALREADY CHECKED IN TODAY'}
   else if(x.status==='cancelled'){kind='denied';symbol='×';title='REGISTRATION CANCELLED'}
   else if(x.status==='congress_checkin_required'){kind='denied';symbol='×';title='CONGRESS CHECK-IN REQUIRED'}
   else if(x.status==='not_eligible'){kind='denied';symbol='×';title='NOT ELIGIBLE FOR VOTING'}
@@ -110,8 +110,8 @@ function renderResult(x){
   $('#votingStatus').textContent=d.votingStatus||(d.votingMember==='Yes'?'ELIGIBLE':'NOT ELIGIBLE');
   $('#apparelSizeRow').classList.toggle('hidden',mode!=='apparel');
   $('#apparelSize').textContent=d.shirtJacketSize||'NOT RECORDED';
-  const current=mode==='voting'?d.votingCheckedInAt:mode==='apparel'?d.apparelCollectedAt:d.checkedInAt;
-  $('#timeLabel').textContent=mode==='voting'?'VOTING CHECK-IN':mode==='apparel'?'APPAREL COLLECTED':'CONGRESS CHECK-IN';
+  const current=mode==='voting'?d.votingCheckedInAt:mode==='apparel'?d.apparelCollectedAt:(Object.hasOwn(d,'congressCheckedInAt')?d.congressCheckedInAt:d.checkedInAt);
+  $('#timeLabel').textContent=mode==='voting'?'VOTING CHECK-IN':mode==='apparel'?'APPAREL COLLECTED':"TODAY'S CONGRESS CHECK-IN";
   $('#checkTime').textContent=fmt(current);
   $('#previousRow').classList.toggle('hidden',x.status!=='duplicate');
   $('#previousTime').textContent=fmt(current);

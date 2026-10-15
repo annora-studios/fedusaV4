@@ -1,3 +1,4 @@
+import { congressHistory } from '../lib/attendance.js';
 import { json, requireAdmin, readAllDelegates } from "./_shared.js";
 
 export default async (req) => {
@@ -7,6 +8,7 @@ export default async (req) => {
     const rows = await readAllDelegates();
     return json({ delegates: rows.map(x => ({
       ...x,
+      congressCheckIns: congressHistory(x),
       primaryContact: undefined,
       headshotUrl: `/api/asset?key=${encodeURIComponent(x.headshotKey || '')}&pin=${encodeURIComponent(url.searchParams.get("pin"))}`,
       badgeQrUrl: `/api/asset?key=${encodeURIComponent(x.badgeQrKey || '')}&pin=${encodeURIComponent(url.searchParams.get("pin"))}`

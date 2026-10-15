@@ -1,3 +1,4 @@
+import { CONGRESS_DATES, congressCheckInAt } from '../lib/attendance.js';
 import { assetsStore, requireAdmin, readAllDelegates } from './_shared.js';
 
 // Leave room for workbook XML and the platform's binary-response encoding.
@@ -13,7 +14,8 @@ const columns=[
   ['Accommodation Required','accommodationRequired',20],['Conference Check-in','conferenceCheckIn',22],['Conference Check-out','conferenceCheckOut',22],
   ['Inbound Flight Status','inboundStatus',20],['Inbound Airline','inboundAirline',18],['Inbound Flight Number','inboundNumber',20],['Arrival Date','arrivalDate',16],['Arrival Time','arrivalTime',16],
   ['Outbound Flight Status','outboundStatus',20],['Outbound Airline','outboundAirline',18],['Outbound Flight Number','outboundNumber',20],['Departure Date','departureDate',16],['Departure Time','departureTime',16],
-  ['Congress Checked In At','checkedInAt',24],['Voting Checked In At','votingCheckedInAt',24],['Apparel Collected At','apparelCollectedAt',24],['Headshot','headshot',18],['Badge QR','delegateQr',18]
+  ['Congress Checked In At','checkedInAt',24],['Voting Checked In At','votingCheckedInAt',24],['Apparel Collected At','apparelCollectedAt',24],['Headshot','headshot',18],['Badge QR','delegateQr',18],
+  ...CONGRESS_DATES.map((date,i)=>[`Day ${i+1} Congress Check-in (${date})`,`congressDay${i+1}`,30])
 ].map(([header,key,width])=>({header,key,width}));
 
 
@@ -77,7 +79,7 @@ function addTableSheet(wb, name, rows, images, imageIds, includeImages) {
   ws.getRow(1).font = {bold: true};
   ws.getRow(1).height = 25;
   for (const x of rows) {
-    const row = ws.addRow({registrationId:x.registrationId,registrationType:x.registrationType==='affiliate'?'Affiliate Attendee':'VIP / Main Delegate',delegateId:x.delegateId,badgeId:x.badgeId,affiliate:x.affiliate||'',primaryName:x.primaryContact?.fullName||'',primaryEmail:x.primaryContact?.email||'',primaryMobile:x.primaryContact?.mobile||'',fullName:x.fullName,jobTitle:x.jobTitle,email:x.email,mobile:x.mobile,dietary:x.dietary,accessibility:x.accessibility,shirtJacketSize:x.shirtJacketSize,votingStatus:x.votingStatus||(x.votingMember==='Yes'?'Primary Member':'Observer'),votingMember:x.votingMember,accommodationRequired:x.accommodation?.required||'No',conferenceCheckIn:x.conferenceDates?.checkIn||x.accommodation?.checkIn||'',conferenceCheckOut:x.conferenceDates?.checkOut||x.accommodation?.checkOut||'',inboundStatus:x.inboundFlight?.status||'',inboundAirline:x.inboundFlight?.airline||'',inboundNumber:x.inboundFlight?.flightNumber||'',arrivalDate:x.inboundFlight?.date||'',arrivalTime:x.inboundFlight?.time||'',outboundStatus:x.outboundFlight?.status||'',outboundAirline:x.outboundFlight?.airline||'',outboundNumber:x.outboundFlight?.flightNumber||'',departureDate:x.outboundFlight?.date||'',departureTime:x.outboundFlight?.time||'',checkedInAt:x.checkedInAt||'',votingCheckedInAt:x.votingCheckedInAt||'',apparelCollectedAt:x.apparelCollectedAt||''});
+    const row = ws.addRow({registrationId:x.registrationId,registrationType:x.registrationType==='affiliate'?'Affiliate Attendee':'VIP / Main Delegate',delegateId:x.delegateId,badgeId:x.badgeId,affiliate:x.affiliate||'',primaryName:x.primaryContact?.fullName||'',primaryEmail:x.primaryContact?.email||'',primaryMobile:x.primaryContact?.mobile||'',fullName:x.fullName,jobTitle:x.jobTitle,email:x.email,mobile:x.mobile,dietary:x.dietary,accessibility:x.accessibility,shirtJacketSize:x.shirtJacketSize,votingStatus:x.votingStatus||(x.votingMember==='Yes'?'Primary Member':'Observer'),votingMember:x.votingMember,accommodationRequired:x.accommodation?.required||'No',conferenceCheckIn:x.conferenceDates?.checkIn||x.accommodation?.checkIn||'',conferenceCheckOut:x.conferenceDates?.checkOut||x.accommodation?.checkOut||'',inboundStatus:x.inboundFlight?.status||'',inboundAirline:x.inboundFlight?.airline||'',inboundNumber:x.inboundFlight?.flightNumber||'',arrivalDate:x.inboundFlight?.date||'',arrivalTime:x.inboundFlight?.time||'',outboundStatus:x.outboundFlight?.status||'',outboundAirline:x.outboundFlight?.airline||'',outboundNumber:x.outboundFlight?.flightNumber||'',departureDate:x.outboundFlight?.date||'',departureTime:x.outboundFlight?.time||'',checkedInAt:x.checkedInAt||'',votingCheckedInAt:x.votingCheckedInAt||'',apparelCollectedAt:x.apparelCollectedAt||'',...Object.fromEntries(CONGRESS_DATES.map((date,i)=>[`congressDay${i+1}`,congressCheckInAt(x,date)||'']))});
     row.height = 30;
     for (const [key, column] of [[x.headshotKey, 'headshot'], [x.badgeQrKey, 'delegateQr']]) {
       const cell = row.getCell(column);
